@@ -10,6 +10,7 @@ import { useAppDispatch } from '../hooks/redux';
 import { setCredentials } from '../store/slices/authSlice';
 import { useNavigate } from 'react-router-dom';
 import { Form } from '@/components/Form';
+import { toaster } from '@/components/Toaster';
 
 const loginSchema = z.object({
   email: emailSchema,
@@ -29,11 +30,28 @@ export const Auth = () => {
 
   const handleLogin = async (data: LoginFormData) => {
     try {
-      const result = await login(data).unwrap();
-      dispatch(setCredentials(result));
-      navigate('/');
+      console.log({data})
+      const {data: userData, success} = await login(data).unwrap();
+      if (userData && success) {
+        dispatch(setCredentials(userData));
+        navigate('/home');
+        toaster.success({
+          title: 'Logged In',
+          description: 'Welcome In Fantasy World',
+        })
+        navigate('/home');
+      } else {
+        toaster.error({
+          title: 'Opps',
+          description: 'Something Went Wrong',
+        })
+      }
     } catch (err) {
       console.error('Failed to login:', err);
+      toaster.error({
+        title: 'Opps',
+        description: 'Something Went Wrong',
+      })
     }
   };
 

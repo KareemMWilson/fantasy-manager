@@ -5,6 +5,7 @@ import { PersistGate } from "redux-persist/integration/react";
 import { store, persistor } from "./store";
 import { ChakraProvider } from "@chakra-ui/react";
 import system from "./theme/theme";
+import { Toaster } from "./components/Toaster";
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
       <PersistGate loading={null} persistor={persistor}>
         <ChakraProvider value={system}>
           <Navigation />
+          <Toaster />
         </ChakraProvider>
       </PersistGate>
     </Provider>
