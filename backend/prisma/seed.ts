@@ -13,21 +13,6 @@ async function main() {
       },
     });
   }
-
-  const playersToList = await prisma.player.findMany({
-    take: Math.floor(players.length * 0.2),
-    orderBy: { value: "desc" },
-  });
-
-  for (const player of playersToList) {
-    await prisma.transfer.create({
-      data: {
-        playerId: player.id,
-        askingPrice: Math.floor(player.value * 1.2),
-        sellerId: player.teamId,
-      },
-    });
-  }
 }
 
 main()
