@@ -8,6 +8,7 @@ const authRepo = new AuthRepo();
 const authService = new AuthService(authRepo);
 const authController = new AuthController(authService);
 
-router.post('/auth', (req, res) => authController.authenticate(req, res));
+
+router.post('/', (req, res) => authController.authenticate(req, res));
 
 export default router; 
