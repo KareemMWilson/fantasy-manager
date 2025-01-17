@@ -1,5 +1,4 @@
 import { Drawer } from "@/components/Drawer";
-import { TeamButton } from "@/components/TeamButton";
 import { HStack, VStack } from "@chakra-ui/react";
 import { IoShirt } from "react-icons/io5";
 
@@ -28,7 +27,6 @@ const Home = () => {
         <VStack style={{ fontSize: "2rem" }}><IoShirt size={60}/></VStack>
       </VStack>
     </HStack>
-    {/* <TeamButton /> */}
     <Drawer />
     </>
 
