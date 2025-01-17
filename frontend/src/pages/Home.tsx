@@ -1,9 +1,11 @@
+import { TeamButton } from "@/components/TeamButton";
 import { HStack, VStack } from "@chakra-ui/react";
 import { IoShirt } from "react-icons/io5";
 
 const Home = () => {
   return (
     // <Spinner width='20rem' height='20rem' color='primary.900' borderWidth='6px' opacity='0.6'/>
+    <>
     <HStack height="40rem" width="40vw">
       <VStack id='GOALKEEPER' height="25rem" alignItems='center' justifyContent='center'>
         <VStack style={{ fontSize: "2rem" }}><IoShirt size={60}/></VStack>
@@ -25,6 +27,9 @@ const Home = () => {
         <VStack style={{ fontSize: "2rem" }}><IoShirt size={60}/></VStack>
       </VStack>
     </HStack>
+    <TeamButton />
+    </>
+
   );
 };
 
