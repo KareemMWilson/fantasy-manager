@@ -1,4 +1,4 @@
-import { useForm, FormProvider } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import InputField from '../components/Form/Fields/Input.Field';
@@ -9,6 +9,7 @@ import { useAuthMutation } from '../store/services/authService';
 import { useAppDispatch } from '../hooks/redux';
 import { setCredentials } from '../store/slices/authSlice';
 import { useNavigate } from 'react-router-dom';
+import { Form } from '@/components/Form';
 
 const loginSchema = z.object({
   email: emailSchema,
@@ -37,8 +38,7 @@ export const Auth = () => {
   };
 
   return (
-    <FormProvider {...methods}>
-      <form onSubmit={methods.handleSubmit(handleLogin)}>
+      <Form onSubmit={handleLogin} methods={methods}>
         <InputField
           name="email"
           label="Email"
@@ -56,8 +56,7 @@ export const Auth = () => {
         />
 
         <Button type="submit" isLoading={isLoading} iconRight={<GiOpenGate />} primary>Login</Button>
-      </form>
-    </FormProvider>
+      </Form>
   );
 };
 
