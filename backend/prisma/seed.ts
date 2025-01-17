@@ -1,5 +1,5 @@
 import { players } from "./data/players";
-import { PrismaClient } from "@prisma/client";
+import { Position, PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -9,6 +9,7 @@ async function main() {
     await prisma.player.create({
       data: {
         ...player,
+        position: player.position as Position,
       },
     });
   }
