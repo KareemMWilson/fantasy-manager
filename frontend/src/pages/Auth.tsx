@@ -5,9 +5,10 @@ import InputField from '../components/Form/Fields/Input.Field';
 import { emailSchema, passwordSchema } from '../utils/validations';
 import Button from '@/components/Button';
 import { GiOpenGate } from 'react-icons/gi';
-import { useLoginMutation } from '../store/services/authService';
+import { useAuthMutation } from '../store/services/authService';
 import { useAppDispatch } from '../hooks/redux';
 import { setCredentials } from '../store/slices/authSlice';
+import { useNavigate } from 'react-router-dom';
 
 const loginSchema = z.object({
   email: emailSchema,
@@ -17,17 +18,19 @@ const loginSchema = z.object({
 type LoginFormData = z.infer<typeof loginSchema>;
 
 export const Auth = () => {
+  const navigate = useNavigate();
   const methods = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
     mode: 'onBlur',
   });
-  const [login, { isLoading }] = useLoginMutation();
+  const [login, { isLoading }] = useAuthMutation();
   const dispatch = useAppDispatch();
 
   const handleLogin = async (data: LoginFormData) => {
     try {
       const result = await login(data).unwrap();
       dispatch(setCredentials(result));
+      navigate('/');
     } catch (err) {
       console.error('Failed to login:', err);
     }

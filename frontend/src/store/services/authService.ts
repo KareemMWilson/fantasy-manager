@@ -1,33 +1,22 @@
 import { api } from '../api';
 
-export interface LoginRequest {
+export interface AuthRequest {
   email: string;
   password: string;
-}
-
-export interface RegisterRequest {
-  email: string;
-  password: string;
-  name: string;
 }
 
 export const authApi = api.injectEndpoints({
   endpoints: (builder) => ({
-    login: builder.mutation<{ token: string; user: unknown }, LoginRequest>({
+    auth: builder.mutation<{ token: string; user: unknown }, AuthRequest>({
       query: (credentials) => ({
-        url: '/auth/login',
+        url: '/auth',
         method: 'POST',
         body: credentials,
       }),
-    }),
-    getMe: builder.query<unknown, void>({
-      query: () => '/auth/me',
-      providesTags: ['User'],
     }),
   }),
 });
 
 export const {
-  useLoginMutation,
-  useGetMeQuery,
+  useAuthMutation,
 } = authApi; 
