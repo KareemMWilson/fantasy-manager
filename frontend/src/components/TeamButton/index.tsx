@@ -3,9 +3,8 @@ import Lottie from "react-lottie";
 import animationData from "./ball.json";
 import { VStack } from "@chakra-ui/react";
 
-
-export const TeamButton: React.FC = () => {
-  const [hovered, setHovered] = useState(false);
+export const TeamButton: React.FC<{onClick?: () => void}> = ({onClick}) => {
+  const [hovered, setHovered] = useState<boolean>(false);
   const defaultOptions = {
     loop: true,
     autoplay: true,
@@ -14,13 +13,14 @@ export const TeamButton: React.FC = () => {
 
   return (
     <VStack
-      onClick={() => console.log('clicked')}
+      onClick={onClick}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       position="absolute"
       left="0px"
       bottom="1rem"
-      cursor='pointer'
+      cursor="pointer"
+      opacity={hovered ? "1" : "0.6"}
     >
       <Lottie options={defaultOptions} height="15rem" width="15rem" />
       {hovered && <div>Take A Look on Whole Team</div>}
