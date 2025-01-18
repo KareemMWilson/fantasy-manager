@@ -2,7 +2,7 @@ import { z } from "zod";
 
 const configSchema = z.object({
   jwt: z.object({
-    secret: z.string().min(1, "JWT_SECRET is required"),
+    secret: z.string().min(1, "JWT_SECRET is required").default('secret'),
   }),
   PORT: z.coerce.number().default(5000),
   REDIS: z.object({

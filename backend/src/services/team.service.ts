@@ -1,18 +1,15 @@
-import { Player, Position, Team, User } from "@prisma/client";
+import { Player, Position, Team } from "@prisma/client";
 import { TeamRepo } from "../repos/team.repo";
 
-export class TeamService {
-  constructor(private teamRepo: TeamRepo) {}
+export const TeamService = {
+  async initializingTeam(userId: string): Promise<Team> {
+    const randomPlayers = await this.getTeamPlayers();
+    const teamAssigned = await TeamRepo.assignTeamToUser(randomPlayers, userId);
 
-  static async initializingTeam(userId: string): Promise<Team> {
-    const randomPlayers = await this.getTeamPlayers()
-    const teamAssigned = await TeamRepo.assignTeamToUser(randomPlayers, userId)
-    
-    return teamAssigned
-  }
+    return teamAssigned;
+  },
 
-
-  private static async getTeamPlayers(): Promise<Player[]> {
+  async getTeamPlayers(): Promise<Player[]> {
     const requiredPlayersForNewUser: Record<Position, number> = {
       GOALKEEPER: 3,
       DEFENDER: 6,
@@ -29,6 +26,5 @@ export class TeamService {
     const playersByPosition = await Promise.all(playerPromises);
 
     return playersByPosition.flat();
-  }
-
-}
+  },
+};

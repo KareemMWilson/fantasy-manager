@@ -1,9 +1,8 @@
-import { Player, Position, PrismaClient, Team, User } from '@prisma/client';
-import { prisma } from '../db/prisma';
+import { Player, Position, Team } from "@prisma/client";
+import { prisma } from "../db/prisma";
 
-
-export class TeamRepo {
-  static async getRandomPlayers(position: Position, count: number): Promise<Player[]> {
+export const TeamRepo = {
+  async getRandomPlayers(position: Position, count: number): Promise<Player[]> {
     try {
       const players = await prisma.$queryRaw<Player[]>`
         SELECT *
@@ -14,23 +13,25 @@ export class TeamRepo {
       `;
       return players;
     } catch (error) {
-      console.log({ error });
+      console.error("Error fetching random players:", error);
       return [];
     }
-  }
+  },
 
-  static async assignTeamToUser(players: Player[], userId: string): Promise<Team>{
-    const team = await prisma.team.create({
-      data: {
-      userId: userId,
-      players: {
-        connect: players.map(player => ({ id: player.id }))
-      }
-      }
-    });
-  
-    return team;
-  }
-
-  
-} 
+  async assignTeamToUser(players: Player[], userId: string): Promise<Team> {
+    try {
+      const team = await prisma.team.create({
+        data: {
+          userId: userId,
+          players: {
+            connect: players.map((player) => ({ id: player.id })),
+          },
+        },
+      });
+      return team;
+    } catch (error) {
+      console.error("Error assigning team to user:", error);
+      throw error;
+    }
+  },
+};
