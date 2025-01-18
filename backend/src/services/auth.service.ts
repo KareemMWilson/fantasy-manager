@@ -5,15 +5,16 @@ import { AuthInput } from "../validations/auth.validation";
 import { hash, compare } from "bcrypt";
 import { sign } from "jsonwebtoken";
 import { config } from "../config";
+import jwt from "jsonwebtoken";
 
-type SafeUser = Omit<User, 'updatedAt' | 'createdAt' | 'password'>;
+type SafeUser = Omit<User, "updatedAt" | "createdAt" | "password">;
 export class AuthService {
-  constructor(private authRepository: AuthRepo) {}
+  constructor(private authRepo: AuthRepo) {}
 
   async authenticate(
     input: AuthInput
   ): Promise<{ user: SafeUser; token: string; isNewUser: boolean }> {
-    let existingUser = await this.authRepository.findUserByEmail(input.email);
+    let existingUser = await this.authRepo.findUserByEmail(input.email);
 
     if (existingUser) {
       const isPasswordValid = await compare(
@@ -28,7 +29,7 @@ export class AuthService {
       return { user: this.toSafeUser(existingUser), token, isNewUser: false };
     } else {
       const hashedPassword = await hash(input.password, 10);
-      const newUser = await this.authRepository.createUser({
+      const newUser = await this.authRepo.createUser({
         ...input,
         password: hashedPassword,
       });
@@ -36,6 +37,17 @@ export class AuthService {
       const token = this.generateToken(newUser);
       return { user: this.toSafeUser(newUser), token, isNewUser: true };
     }
+  }
+
+  async me(accessToken: string): Promise<User> {
+    const decoded = jwt.verify(accessToken, config.jwt.secret) as {
+      userId: string;
+    };
+
+    const userId = decoded.userId;
+    const user = this.authRepo.getUserById(userId);
+
+    return user;
   }
 
   private generateToken(user: User): string {

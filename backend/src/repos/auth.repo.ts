@@ -15,4 +15,17 @@ export class AuthRepo {
       where: { email },
     });
   }
+
+  async getUserById(userId: string): Promise<User>{
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      include: {
+        team: true,
+      },
+    });
+    if (!user) {
+      throw new Error(`User with ID ${userId} not found`);
+    }
+    return user;
+  }
 } 

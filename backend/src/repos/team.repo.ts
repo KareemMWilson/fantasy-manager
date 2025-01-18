@@ -1,16 +1,36 @@
-import { PrismaClient, Team, User } from '@prisma/client';
-import { TeamInput } from '../validations/team.validation';
+import { Player, Position, PrismaClient, Team, User } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
 export class TeamRepo {
-  async createUser(data: TeamInput): Promise<Team[]> {
-    return []
+  static async getRandomPlayers(position: Position, count: number): Promise<Player[]> {
+    try {
+      const players = await prisma.$queryRaw<Player[]>`
+        SELECT *
+        FROM "Player"
+        WHERE position = ${position}::"Position"
+        ORDER BY RANDOM()
+        LIMIT ${count}
+      `;
+      return players;
+    } catch (error) {
+      console.log({ error });
+      return [];
+    }
   }
 
-  async findUserByEmail(email: string): Promise<User | null> {
-    return prisma.user.findUnique({
-      where: { email },
+  static async assignTeamToUser(players: Player[], userId: string): Promise<Team>{
+    const team = await prisma.team.create({
+      data: {
+      userId: userId,
+      players: {
+        connect: players.map(player => ({ id: player.id }))
+      }
+      }
     });
+  
+    return team;
   }
+
+  
 } 
