@@ -1,7 +1,7 @@
 import { PrismaClient, User } from '@prisma/client';
 import { AuthInput } from '../validations/auth.validation';
+import { prisma } from '../db/prisma';
 
-const prisma = new PrismaClient();
 
 export class AuthRepo {
   async createUser(data: AuthInput): Promise<User> {

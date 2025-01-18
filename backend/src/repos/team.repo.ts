@@ -1,6 +1,6 @@
 import { Player, Position, PrismaClient, Team, User } from '@prisma/client';
+import { prisma } from '../db/prisma';
 
-const prisma = new PrismaClient();
 
 export class TeamRepo {
   static async getRandomPlayers(position: Position, count: number): Promise<Player[]> {
