@@ -1,34 +1,38 @@
-import { PrismaClient } from '@prisma/client';
 import app from './app';
 import { config } from './config';
 import { green } from 'colorette';
+import { prisma } from './db/prisma';
 
-const PORT = config.PORT
+const PORT = config.PORT || 3000;
 
-const server = app.listen(PORT, () => {
-  console.log(`✅ ${green(`Server running on PORT: ${PORT}`)}`);
-});
-
-// Database connection verification
-const prisma = new PrismaClient();
-
-const connectDB = async () => {
+const startServer = async () => {
   try {
     await prisma.$connect();
     console.log(`✅ ${green('Successfully connected to database')}`);
+    
+    const server = app.listen(PORT, () => {
+      console.log(`✅ ${green(`Server running on PORT: ${PORT}`)}`);
+    });
+
+    process.on('SIGTERM', async () => {
+      console.log('🔄 SIGTERM received. Shutting down gracefully...');
+      await prisma.$disconnect();
+      server.close(() => {
+        console.log('✅ Server closed');
+        process.exit(0);
+      });
+    });
+
+    process.on('unhandledRejection', (err: any) => {
+      console.error('❌ UNHANDLED REJECTION! Shutting down...');
+      console.error(err.name, err.message);
+      server.close(() => process.exit(1));
+    });
+
   } catch (error) {
-    console.error('❌ Error connecting to database:', error);
+    console.error('❌ Error starting application:', error);
     process.exit(1);
   }
 };
 
-connectDB();
-
-
-process.on('unhandledRejection', (err: any) => {
-  console.error('❌ UNHANDLED REJECTION! Shutting down...');
-  console.error(err.name, err.message);
-  server.close(() => {
-    process.exit(1);
-  });
-}); 
+startServer();
