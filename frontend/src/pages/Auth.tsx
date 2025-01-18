@@ -30,7 +30,6 @@ export const Auth = () => {
 
   const handleLogin = async (data: LoginFormData) => {
     try {
-      console.log({data})
       const {data: userData, success} = await login(data).unwrap();
       if (userData && success) {
         dispatch(setCredentials(userData));
