@@ -1,13 +1,27 @@
-//TODO: create zodSchema for config, and not use process.env , only use config object
+import { z } from "zod";
 
-export const config = {
+const configSchema = z.object({
+  jwt: z.object({
+    secret: z.string().min(1, "JWT_SECRET is required"),
+  }),
+  PORT: z.coerce.number().default(5000),
+  REDIS: z.object({
+    HOST: z.string().default("localhost"),
+    PORT: z.coerce.number().default(6379),
+    PASSWORD: z.string().default("password"),
+  }),
+});
+
+const parsedConfig = configSchema.parse({
   jwt: {
-    secret: process.env.JWT_SECRET || "kareem-secret",
+    secret: process.env.JWT_SECRET,
   },
-  PORT: process.env.PORT || 5000,
+  PORT: process.env.PORT,
   REDIS: {
-    HOST: process.env.REDIS_HOST || 'localhost',
-    PORT: process.env.REDIS_PORT || 6379,
-    PASSWORD: process.env.REDIS_PASSWORD || 'password',
-  }
-};
+    HOST: process.env.REDIS_HOST,
+    PORT: process.env.REDIS_PORT,
+    PASSWORD: process.env.REDIS_PASSWORD,
+  },
+});
+
+export const config = parsedConfig;

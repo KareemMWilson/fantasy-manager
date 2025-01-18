@@ -3,7 +3,7 @@ import { config } from './config';
 import { green } from 'colorette';
 import { prisma } from './db/prisma';
 
-const PORT = config.PORT || 3000;
+const PORT = config.PORT;
 
 const startServer = async () => {
   try {
