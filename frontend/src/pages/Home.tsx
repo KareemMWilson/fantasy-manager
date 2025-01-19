@@ -1,6 +1,7 @@
 import { Avatar } from "@/components/Avatar";
 import Dialog from "@/components/Dialog";
-import { Drawer } from "@/components/Drawer";
+import { TeamDrawer } from "@/components/Drawer/TeamDrawer";
+import { TransferDrawer } from "@/components/Drawer/TransferDrawer";
 import { HStack, VStack } from "@chakra-ui/react";
 import { useState } from "react";
 import { IoShirt } from "react-icons/io5";
@@ -49,7 +50,8 @@ const Home = () => {
         <VStack style={{ fontSize: "2rem" }}><IoShirt size={60}/></VStack>
       </VStack>
     </HStack>
-    <Drawer />
+    <TeamDrawer />
+    <TransferDrawer />
     </>
 
   );
