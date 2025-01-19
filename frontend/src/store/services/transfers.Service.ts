@@ -10,15 +10,15 @@ export interface TeamResponse {
 export interface QueryType {
   playerName: string;
   teamName: string;
-  price: [number, number];
+  priceRange: [number, number];
 }
 
 export const teamApi = api.injectEndpoints({
   endpoints: (builder) => ({
     getGlobalTransfers: builder.query<TeamResponse, QueryType>({
       query: (query: QueryType) => {
-        const {playerName, teamName, price} = query
-        const [minPrice, maxPrice] = price
+        const {playerName, teamName, priceRange} = query
+        const [minPrice, maxPrice] = priceRange
 
         return {
           url: `/transfers`,
