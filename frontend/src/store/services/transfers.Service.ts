@@ -1,7 +1,5 @@
 import { api } from "../api";
 
-
-
 export interface TeamResponse {
   data: {
     team: string;
@@ -10,20 +8,31 @@ export interface TeamResponse {
 }
 
 export interface QueryType {
-    playerName:  string
-    teamName: string
-    price: [number, number]
+  playerName: string;
+  teamName: string;
+  price: [number, number];
 }
 
 export const teamApi = api.injectEndpoints({
   endpoints: (builder) => ({
-    getGlobalTransfers: builder.mutation<TeamResponse, unknown>({
-      query: (query: QueryType) => ({
-        url: `/transfers?playerName=${query.playerName}teamName=${query.teamName}price=${query.price}`,
-        method: "GET",
-      }),
+    getGlobalTransfers: builder.query<TeamResponse, QueryType>({
+      query: (query: QueryType) => {
+        const {playerName, teamName, price} = query
+        const [minPrice, maxPrice] = price
+
+        return {
+          url: `/transfers`,
+          method: "GET",
+          params: {
+            playerName,
+            teamName,
+            minPrice,
+            maxPrice
+          }
+        };
+      },
     }),
   }),
 });
 
-export const { useGetGlobalTransfersMutation } = teamApi;
+export const { useGetGlobalTransfersQuery, useLazyGetGlobalTransfersQuery } = teamApi;

@@ -1,6 +1,5 @@
 import Button from "@/components/Button";
-import { useAppDispatch } from "@/hooks/redux";
-import { useGetGlobalTransfersMutation } from "@/store/services/transfers.Service";
+import { useGetGlobalTransfersQuery, useLazyGetGlobalTransfersQuery } from "@/store/services/transfers.Service";
 import { HStack, Input, Slider, VStack } from "@chakra-ui/react";
 import { useState } from "react";
 import { GrClear, GrFilter } from "react-icons/gr";
@@ -8,26 +7,22 @@ import { GrClear, GrFilter } from "react-icons/gr";
 export const FilterQuery = () => {
   const [teamName, setTeamName] = useState("");
   const [playerName, setPlayerName] = useState("");
-  const [priceRange, setPriceRange] = useState([0, 5000000]);
-  const dispatch = useAppDispatch()
-  const [getGlobalTransfers, { isLoading }] = useGetGlobalTransfersMutation();
-
-  const handleSliderChange = (newRange: {value: []}) => {
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, 5000000]);
+  const [trigger, {data, error, isLoading}] = useLazyGetGlobalTransfersQuery();
+  
+  const handleSliderChange = (newRange: {value: [number,number]}) => {
     setPriceRange(newRange.value);
   };
 
-  const handleFilter = async () => {
-    const query = {
-      teamName: teamName || undefined,
-      playerName: playerName || undefined,
-      price: priceRange || undefined,
-    };
-
-    const {data: transfersData, success} = await getGlobalTransfers(query).unwrap()
-    console.log({transfersData})
-    // dispatch(setGlobalTransfers(query));
-    console.log({ query });
-  };
+  const handleFilter = () => {
+    const quary = {
+      teamName,
+      playerName,
+      price: priceRange
+    }
+    
+    trigger(quary)
+  }
 
   return (
     <HStack gap={4} width="100%" borderWidth='1px' p={1} borderColor='primary.200' borderRadius='10px'>

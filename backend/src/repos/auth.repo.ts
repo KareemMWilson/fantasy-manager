@@ -2,7 +2,6 @@ import { PrismaClient, User } from "@prisma/client";
 import { AuthInput } from "../validations/auth.validation";
 import { prisma } from "../db/prisma";
 
-// AuthRepo Namespace
 export const AuthRepo = {
   createUser: async (data: AuthInput): Promise<User> => {
     return prisma.user.create({

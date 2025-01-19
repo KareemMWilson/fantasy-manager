@@ -2,6 +2,7 @@ import express, { Application } from 'express';
 import cors from 'cors';
 import authRouter from './routes/auth.routes'
 import teamRouter from './routes/team.routes'
+import transfersRouter from './routes/transfer.routes'
 import { loggingMiddleware } from './middlewares/logging';
 
 const app: Application = express();
@@ -23,5 +24,6 @@ app.use(loggingMiddleware);
 // Routes
 app.use('/auth', authRouter);
 app.use('/team', teamRouter);
+app.use('/transfers', transfersRouter);
 
 export default app;
