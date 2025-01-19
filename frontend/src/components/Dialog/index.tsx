@@ -1,85 +1,105 @@
-import { ReactNode } from 'react';
-import {
-  DialogActionTrigger,
-  DialogBody,
-  DialogCloseTrigger,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogRoot,
-  DialogTitle,
-  DialogTrigger,
-  ButtonProps,
-  DialogRootProps,
-} from "@chakra-ui/react"
-import Button from '../Button';
+import React, { useEffect } from "react";
+import ReactDOM from "react-dom";
+import { Box, VStack, HStack, Text } from "@chakra-ui/react";
+import Button from "../Button";
 
-interface CustomDialogProps extends DialogRootProps {
-  triggerText?: string;
-  trigger?: ReactNode;
+interface DialogProps {
+  isOpen: boolean;
+  onClose: () => void;
   title?: string;
-  content: ReactNode;
+  children: React.ReactNode;
   confirmButton?: {
     text: string;
     onClick?: () => void;
-    props?: ButtonProps;
   };
   cancelButton?: {
     text: string;
     onClick?: () => void;
-    props?: ButtonProps;
   };
-  size?: 'sm' | 'md' | 'lg' | 'xl' | 'full';
 }
 
-export const Dialog = ({
-  triggerText,
-  trigger,
+const Dialog = ({
+  isOpen,
+  onClose,
   title,
-  content,
-  confirmButton = { text: 'Confirm' },
-  cancelButton = { text: 'Cancel' },
-}: CustomDialogProps) => {
-  return (
-    <DialogRoot>
-      <DialogTrigger asChild>
-        {trigger || (
-          <Button variant="outline" size="sm">
-            {triggerText}
-          </Button>
-        )}
-      </DialogTrigger>
-      <DialogContent>
-        {title && (
-          <DialogHeader>
-            <DialogTitle>{title}</DialogTitle>
-          </DialogHeader>
-        )}
-        <DialogBody>
-          {content}
-        </DialogBody>
-        <DialogFooter>
-          <DialogActionTrigger asChild>
-            <Button 
-              variant="outline" 
-              onClick={cancelButton.onClick}
-              {...cancelButton.props}
+  children,
+  confirmButton,
+  cancelButton,
+}: DialogProps) => {
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    if (isOpen) {
+      document.addEventListener("keydown", handleKeyDown);
+    }
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, onClose]);
+
+  if (!isOpen) return null;
+
+
+  return ReactDOM.createPortal(
+    <Box
+      position="fixed"
+      top="0"
+      left="0"
+      w="100vw"
+      h="100vh"
+      bg="blackAlpha.700"
+      display="flex"
+      alignItems="center"
+      justifyContent="center"
+      zIndex="overlay"
+    >
+      <Box
+        bg="white"
+        borderRadius="lg"
+        boxShadow="2xl"
+        maxW="500px"
+        w="90%"
+        p={6}
+      >
+        <VStack gap={6} align="stretch">
+          {title && (
+            <Text
+              fontSize="2xl"
+              fontWeight="bold"
+              textAlign="center"
+              color="blue.600"
             >
-              {cancelButton.text}
-            </Button>
-          </DialogActionTrigger>
-          <Button
-            onClick={confirmButton.onClick}
-            colorScheme="blue"
-            {...confirmButton.props}
-          >
-            {confirmButton.text}
-          </Button>
-        </DialogFooter>
-        <DialogCloseTrigger />
-      </DialogContent>
-    </DialogRoot>
-  )
-}
+              {title}
+            </Text>
+          )}
+          <Box fontSize="md" color="gray.700">
+            {children}
+          </Box>
+          <HStack justify="flex-end" gap={4}>
+            {cancelButton && (
+              <Button
+                variant="outline"
+                colorScheme="gray"
+                onClick={cancelButton.onClick || onClose}
+                _hover={{ bg: "gray.100" }}
+              >
+                {cancelButton.text}
+              </Button>
+            )}
+            {confirmButton && (
+              <Button
+                colorScheme="blue"
+                onClick={confirmButton.onClick}
+                _hover={{ bg: "blue.500", color: "white" }}
+              >
+                {confirmButton.text}
+              </Button>
+            )}
+          </HStack>
+        </VStack>
+      </Box>
+    </Box>,
+    document.body
+  );
+};
 
 export default Dialog;
