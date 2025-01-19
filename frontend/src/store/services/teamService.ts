@@ -14,14 +14,13 @@ export interface TeamResponse {
 
 export const teamApi = api.injectEndpoints({
   endpoints: (builder) => ({
-    getTeamForUser: builder.mutation<TeamResponse, TeamRequest>({
+    getUserTeam: builder.mutation<TeamResponse, TeamRequest>({
       query: (userId) => ({
-        url: "/team",
-        method: "POST",
-        body: {userId},
+        url: `/team?userId=${userId}`,
+        method: "GET",
       }),
     }),
   }),
 });
 
-export const { useGetTeamForUserMutation } = teamApi;
+export const { useGetUserTeamMutation } = teamApi;
