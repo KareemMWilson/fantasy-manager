@@ -1,15 +1,24 @@
 import { HStack, VStack } from "@chakra-ui/react";
 import { FilterOption } from "./FilterOption";
 import { FilterQuery } from "./FIlterQuery";
-
+import React from "react";
+import { QueryType } from "@/store/services/transfers.Service";
 
 interface TransferFiltersProps {
-    setWhichTransfers: (value: "MY" | "GLOBAL") => void;
-    whichTransfers: "MY" | "GLOBAL";
-  }
+  setWhichTransfers: (value: "MY" | "GLOBAL") => void;
+  whichTransfers: "MY" | "GLOBAL";
+  setSearchQuery: React.Dispatch<React.SetStateAction<QueryType>>;
+  searchQuery: QueryType
+}
 
-export const TransferFilters: React.FC<TransferFiltersProps>  = ({ setWhichTransfers, whichTransfers }) => {
-    return (
+export const TransferFilters: React.FC<TransferFiltersProps> = ({
+  setWhichTransfers,
+  whichTransfers,
+  setSearchQuery,
+  searchQuery
+}) => {
+  return (
+    <>
       <VStack>
         <HStack
           display="flex"
@@ -29,7 +38,8 @@ export const TransferFilters: React.FC<TransferFiltersProps>  = ({ setWhichTrans
             onClick={() => setWhichTransfers("GLOBAL")}
           />
         </HStack>
-        {whichTransfers === 'GLOBAL' && <FilterQuery />}
       </VStack>
-    );
-  };
+      {whichTransfers === "GLOBAL" && <FilterQuery setSearchQuery={setSearchQuery} searchQuery={searchQuery} />}
+    </  >
+  );
+};

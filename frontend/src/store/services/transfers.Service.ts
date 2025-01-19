@@ -1,9 +1,32 @@
 import { api } from "../api";
 
-export interface TeamResponse {
-  data: {
-    team: string;
+export interface Transfer {
+  id: string;
+  askingPrice: number;
+  status: "LISTED" | "SOLD" | "CANCELED";
+  listedAt: string; 
+  soldAt: string | null;
+  createdAt: string; 
+  updatedAt: string; 
+  playerId: string;
+  player: {
+    id: string;
+    name: string;
+    position: "GOALKEEPER" | "DEFENDER" | "MIDFIELDER" | "ATTACKER";
   };
+  sellerId: string;
+  seller: {
+    id: string;
+    name: string;
+    user: {
+      id: string;
+      email: string;
+    };
+  };
+}
+
+export interface GlobalTransferResponseType {
+  data: Transfer[]
   success: boolean;
 }
 
@@ -15,7 +38,7 @@ export interface QueryType {
 
 export const teamApi = api.injectEndpoints({
   endpoints: (builder) => ({
-    getGlobalTransfers: builder.query<TeamResponse, QueryType>({
+    getGlobalTransfers: builder.query<GlobalTransferResponseType, QueryType>({
       query: (query: QueryType) => {
         const {playerName, teamName, priceRange} = query
         const [minPrice, maxPrice] = priceRange
@@ -31,6 +54,7 @@ export const teamApi = api.injectEndpoints({
           }
         };
       },
+      keepUnusedDataFor: 30,
     }),
   }),
 });

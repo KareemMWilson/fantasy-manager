@@ -10,15 +10,30 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import {  useMemo, useState } from "react";
 import { FaExchangeAlt } from "react-icons/fa";
 import { TransferFilters } from "./TransferFilters";
+import { QueryType, useGetGlobalTransfersQuery } from "@/store/services/transfers.Service";
+import { List } from "@/components/List";
 
 type Transfers = 'GLOBAL' | 'MY'
+
+
+export const defaultSearchQuery: QueryType = {
+  playerName: "",
+  teamName: "",
+  priceRange: [0, 2000000],
+};
 
 export const TransferDrawer = () => {
   const [hovered, setHovered] = useState<boolean>(false);
   const [whichTransfers, setWhichTransfers] = useState<Transfers>('MY')
+  const [searchQuery, setSearchQuery] = useState<QueryType>(defaultSearchQuery);
+  const memoizedSearchQuery = useMemo(() => searchQuery, [searchQuery]);
+  const {data: globalTransfers, isLoading} = useGetGlobalTransfersQuery(memoizedSearchQuery);
+
+
+
   return (
     <DrawerRoot placement="end">
       <DrawerBackdrop />
@@ -44,7 +59,11 @@ export const TransferDrawer = () => {
           <DrawerTitle color='primary.900'>Transfers List</DrawerTitle>
         </DrawerHeader>
         <DrawerBody>
-          <TransferFilters whichTransfers={whichTransfers} setWhichTransfers={setWhichTransfers}/>
+          {/**filters */}
+          <TransferFilters whichTransfers={whichTransfers} setWhichTransfers={setWhichTransfers} setSearchQuery={setSearchQuery}  searchQuery={searchQuery}/>
+
+          {/**List */}
+          {whichTransfers === 'GLOBAL' && <List data={globalTransfers?.data} isLoading={isLoading}/>}
         </DrawerBody>
         <DrawerFooter>
           <DrawerActionTrigger asChild>
