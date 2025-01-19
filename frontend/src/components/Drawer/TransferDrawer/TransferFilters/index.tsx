@@ -1,5 +1,6 @@
 import { HStack, VStack } from "@chakra-ui/react";
 import { FilterOption } from "./FilterOption";
+import { FilterQuery } from "./FIlterQuery";
 
 
 interface TransferFiltersProps {
@@ -28,6 +29,7 @@ export const TransferFilters: React.FC<TransferFiltersProps>  = ({ setWhichTrans
             onClick={() => setWhichTransfers("GLOBAL")}
           />
         </HStack>
+        {whichTransfers === 'GLOBAL' && <FilterQuery />}
       </VStack>
     );
   };

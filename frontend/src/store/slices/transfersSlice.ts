@@ -22,15 +22,15 @@ const initialState: TeamState = {
   },
 };
 
-const teamSlice = createSlice({
-  name: "team",
+const transfersSlice = createSlice({
+  name: "transfers",
   initialState,
   reducers: {
-    setUserTeam: (state, action: PayloadAction<{ team: Team }>) => {
+    setUserTransfers: (state, action: PayloadAction<{ team: Team }>) => {
       state.team = action.payload.team;
     },
   },
 });
 
-export const { setUserTeam } = teamSlice.actions;
-export default teamSlice.reducer;
+export const { setUserTransfers } = transfersSlice.actions;
+export default transfersSlice.reducer;

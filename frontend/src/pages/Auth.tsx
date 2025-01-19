@@ -5,12 +5,12 @@ import InputField from '../components/Form/Fields/Input.Field';
 import { emailSchema, passwordSchema } from '../utils/validations';
 import Button from '@/components/Button';
 import { GiOpenGate } from 'react-icons/gi';
-import { useAuthMutation } from '../store/services/authService';
 import { useAppDispatch } from '../hooks/redux';
 import { setCredentials } from '../store/slices/authSlice';
 import { useNavigate } from 'react-router-dom';
 import { Form } from '@/components/Form';
 import { toaster } from '@/components/Toaster';
+import { useAuthMutation } from '@/store/services/auth.Service';
 
 const loginSchema = z.object({
   email: emailSchema,
