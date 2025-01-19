@@ -33,12 +33,12 @@ export const Auth = () => {
       const {data: userData, success} = await login(data).unwrap();
       if (userData && success) {
         dispatch(setCredentials(userData));
-        navigate('/home');
+        
         toaster.success({
           title: 'Logged In',
           description: 'Welcome In Fantasy World',
         })
-        navigate('/home');
+        navigate('/home', {state: {isNewUser: userData.isNewUser}});
       } else {
         toaster.error({
           title: 'Opps',

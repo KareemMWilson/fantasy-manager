@@ -1,4 +1,5 @@
 import { api } from "../api";
+import { User } from "../slices/authSlice";
 
 export interface AuthRequest {
   email: string;
@@ -8,7 +9,8 @@ export interface AuthRequest {
 export interface AuthResponse {
   data: {
     token: string;
-    user: unknown;
+    user: User;
+    isNewUser: boolean
   };
   success: boolean;
 }

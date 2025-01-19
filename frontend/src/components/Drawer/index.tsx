@@ -3,7 +3,6 @@ import {
   DrawerActionTrigger,
   DrawerBackdrop,
   DrawerBody,
-  DrawerCloseTrigger,
   DrawerContent,
   DrawerFooter,
   DrawerHeader,
@@ -34,7 +33,6 @@ export const Drawer = () => {
           </DrawerActionTrigger>
           <Button>Transfer</Button>
         </DrawerFooter>
-        <DrawerCloseTrigger />
       </DrawerContent>
     </DrawerRoot>
   );

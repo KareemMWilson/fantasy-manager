@@ -5,6 +5,7 @@ import { combineReducers } from '@reduxjs/toolkit';
 import authReducer from './slices/authSlice';
 import { api } from './api';
 
+
 const persistConfig = {
   key: 'root',
   storage,

@@ -66,7 +66,7 @@ const Dialog = ({
               fontSize="2xl"
               fontWeight="bold"
               textAlign="center"
-              color="blue.600"
+              color="green.600"
             >
               {title}
             </Text>
