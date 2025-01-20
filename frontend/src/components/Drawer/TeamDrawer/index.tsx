@@ -20,7 +20,7 @@ export const TeamDrawer = () => {
       </DrawerTrigger>
       <DrawerContent position='absolute' top={0} left={0} height='100vh' borderRightRadius='32px' bg='green.300'>
         <DrawerHeader>
-          <DrawerTitle>Drawer Title</DrawerTitle>
+          <DrawerTitle>Your Team</DrawerTitle>
         </DrawerHeader>
         <DrawerBody>
           <p>

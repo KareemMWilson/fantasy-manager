@@ -59,7 +59,7 @@ export const TransferDrawer = () => {
         <DrawerHeader>
           <DrawerTitle color="primary.900">Transfers List</DrawerTitle>
         </DrawerHeader>
-        <DrawerBody>
+        <DrawerBody overflowY='hidden'>
           {/**filters */}
           <TransferFilters
             whichTransfers={whichTransfers}

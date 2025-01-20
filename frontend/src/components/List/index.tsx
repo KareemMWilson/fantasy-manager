@@ -25,7 +25,7 @@ export const List = ({
   const manibulatedData = whichTransfer === "MY" ? data?.filter((item) => item.seller.user.id === userId) : data;
 
   return (
-    <VStack gap={5} marginTop="5rem">
+    <VStack gap={5} marginTop="5rem" overflowY='auto' height='32rem' borderRadius='1rem'> 
       {isLoading && !manibulatedData ? (
         <Spinner
           width="10rem"
