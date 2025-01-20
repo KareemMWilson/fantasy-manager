@@ -16,13 +16,9 @@ import { TransferFilters } from "./TransferFilters";
 import {
   QueryType,
   useGetGlobalTransfersQuery,
-  useGetUserTransfersQuery,
 } from "@/store/services/transfers.Service";
-import { List } from "@/components/List";
-import { useAppSelector } from "@/hooks/redux";
-import { RootState } from "@/store";
+import { List, Transfers } from "@/components/List";
 
-type Transfers = "GLOBAL" | "MY";
 
 export const defaultSearchQuery: QueryType = {
   playerName: "",
@@ -34,15 +30,11 @@ export const TransferDrawer = () => {
   const [hovered, setHovered] = useState<boolean>(false);
   const [whichTransfers, setWhichTransfers] = useState<Transfers>("MY");
   const [searchQuery, setSearchQuery] = useState<QueryType>(defaultSearchQuery);
-  const userId = useAppSelector((state: RootState) => state.auth.user?.id);
 
   const memoizedSearchQuery = useMemo(() => searchQuery, [searchQuery]);
   const { refetch: refetchGlobalTransfers, data: globalTransfers, isLoading: globalTransfersIsLoading } =
     useGetGlobalTransfersQuery(memoizedSearchQuery);
 
-  const { refetch: refetchUserTransfers, data: userTransfers, isLoading: userTransfersIsLoading } =
-    useGetUserTransfersQuery(userId ?? "");
-  
     return (
     <DrawerRoot placement="end">
       <DrawerBackdrop />
@@ -77,11 +69,8 @@ export const TransferDrawer = () => {
           />
 
           {/**Lists */}
-          {whichTransfers === "MY" ? (
-            <List data={userTransfers?.data} isLoading={userTransfersIsLoading} refetchTransfers={refetchUserTransfers} mineTransfer={true}  />
-          ): (
-            <List data={globalTransfers?.data} isLoading={globalTransfersIsLoading} refetchTransfers={refetchGlobalTransfers} mineTransfer={true} />
-          )}
+          <List data={globalTransfers?.data} isLoading={globalTransfersIsLoading} refetchTransfers={refetchGlobalTransfers} whichTransfer={whichTransfers}/>
+
         </DrawerBody>
         <DrawerFooter>
           <DrawerActionTrigger asChild>

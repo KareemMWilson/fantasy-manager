@@ -1,41 +1,36 @@
 import { Card as ChakraCard, Text, VStack } from "@chakra-ui/react";
-import Button from "../Button";
+import Button from "../../Button";
 import { IoShirt } from "react-icons/io5";
-import Dialog from "../Dialog";
+import Dialog from "../../Dialog";
 import { useState } from "react";
-import { useDeleteUserTransferMutation } from "@/store/services/transfers.Service";
-import { toaster } from "../Toaster";
+import { toaster } from "../../Toaster";
+// import { useGetUserTeamQuery } from "@/store/services/team.Service";
 
-interface CardProps {
+interface PlayerCardProps {
   title: string;
   subtitleLabel: string;
   subtitleInfo: string;
-  askingPrice: number;
+  price: number;
   buttonText: string;
-  mineTransfer: boolean | undefined;
-  transferId: string;
   refetchTransfers: () => void
 }
 
-export const TransferCard = ({
+export const PlayerCard = ({
   title,
   subtitleInfo,
   subtitleLabel,
-  askingPrice,
   buttonText,
-  mineTransfer,
-  transferId,
+  price,
   refetchTransfers
-}: CardProps) => {
+}: PlayerCardProps) => {
   const [openDialog, setOpenDialog] = useState<boolean>(false);
-  const [deleteTransfer] = useDeleteUserTransferMutation();
   
-  const handleDeleteTransfer = async () => {
+  const handleIntiatingTransferForPlayer = async () => {
     try {
-      const data = await deleteTransfer(transferId).unwrap();
+      const data = {}
       console.log(data);
     
-      if (data?.success) {
+      if (data) {
         toaster.success({
           title: "Done",
           description: "Your Transfer Deleted Successfully",
@@ -58,14 +53,12 @@ export const TransferCard = ({
         isOpen={openDialog}
         onClose={() => setOpenDialog(false)}
         cancelButton={{
-          text: mineTransfer ? "Cancel Transfer" : "Cancel",
-          onClick: mineTransfer ? handleDeleteTransfer : undefined,
+          text: "Initialize Transfer",
+          onClick: handleIntiatingTransferForPlayer,
         }}
       >
         <VStack>
-          {mineTransfer
-            ? "Are you sure you want to cancel Transfer."
-            : "Buying"}
+          <>Here is The Player</>
         </VStack>
       </Dialog>
       <ChakraCard.Root width="100%" height="fit-content" borderRadius="2rem">
@@ -84,12 +77,12 @@ export const TransferCard = ({
             </ChakraCard.Description>
           </VStack>
           <Text color="primary.900" fontSize={20}>
-            {askingPrice} $
+            {price} $
           </Text>
         </ChakraCard.Body>
         <ChakraCard.Footer justifyContent="flex-end">
           <Button onClick={() => setOpenDialog(true)}>{buttonText}</Button>
-        </ChakraCard.Footer>
+        </ChakraCard.Footer>    
       </ChakraCard.Root>
     </>
   );
