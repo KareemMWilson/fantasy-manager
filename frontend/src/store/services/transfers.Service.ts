@@ -44,10 +44,23 @@ export interface QueryType {
   priceRange: [number, number];
 }
 
+export interface BuyPlayerResponseType {
+  data: {
+    message: string | undefined;
+    success: boolean | undefined;
+  };
+}
+
+export interface BuyPlayerRequestPayloadType {
+    transferId: string
+    buyerId: string
+    offeredPrice: number
+}
+
 export const teamApi = api.injectEndpoints({
   endpoints: (builder) => ({
     getGlobalTransfers: builder.query<GetTransferResponseType, QueryType>({
-      query: (query: QueryType) => {
+      query: (query) => {
         const { playerName, teamName, priceRange } = query;
         const [minPrice, maxPrice] = priceRange;
 
@@ -64,7 +77,7 @@ export const teamApi = api.injectEndpoints({
       },
     }),
     getUserTransfers: builder.query<GetTransferResponseType, string>({
-      query: (userId: string) => {
+      query: (userId) => {
         console.log({ ddd: userId });
         return {
           url: `/transfers/${userId}`,
@@ -73,9 +86,20 @@ export const teamApi = api.injectEndpoints({
       },
     }),
     deleteUserTransfer: builder.mutation<DeleteTransferResponseType, string>({
-      query: (transferId: string) => ({
+      query: (transferId) => ({
         url: `/transfers/${transferId}`,
         method: "DELETE",
+      }),
+    }),
+    buyPlayer: builder.mutation<BuyPlayerResponseType, BuyPlayerRequestPayloadType>({
+      query: ({transferId, buyerId, offeredPrice}) => ({
+        url: `/transfers/buy`,
+        method: "POST",
+        body: {
+          transferId,
+          buyerId,
+          offeredPrice
+        }
       }),
     }),
   }),
@@ -87,4 +111,5 @@ export const {
   useGetUserTransfersQuery,
   useLazyGetUserTransfersQuery,
   useDeleteUserTransferMutation,
+  useBuyPlayerMutation
 } = teamApi;

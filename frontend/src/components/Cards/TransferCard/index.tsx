@@ -1,4 +1,4 @@
-import { Card as ChakraCard, Text, VStack } from "@chakra-ui/react";
+import { Badge, Card as ChakraCard, Text, VStack } from "@chakra-ui/react";
 import Button from "../../Button";
 import { IoShirt } from "react-icons/io5";
 import Dialog from "../../Dialog";
@@ -8,6 +8,8 @@ import {
   useDeleteUserTransferMutation,
 } from "@/store/services/transfers.Service";
 import { toaster } from "../../Toaster";
+import { GiBuyCard, GiCancel } from "react-icons/gi";
+import { BuyTransferContent } from "@/components/Drawer/TransferDrawer/BuyTransfer";
 
 interface TransferCardProps {
   mineTransfer: boolean | undefined;
@@ -24,14 +26,16 @@ export const TransferCard = ({
 
   const [deleteTransfer] = useDeleteUserTransferMutation();
 
-  const { id: transferId, askingPrice } = transfer;
+  const { id: transferId, askingPrice, status } = transfer;
   const { name: playerName } = transfer.player;
   const { name: teamName, user } = transfer.seller;
   const { email: sellerEmail } = user;
   const buttonActionText = mineTransfer ? "Cancel Transfer" : "Buy";
+  const buttonActionIcon = mineTransfer ? <GiCancel />  : < GiBuyCard />
+
   const content = mineTransfer
     ? "Are you sure you want to cancel Transfer."
-    : "Buying";
+    : <BuyTransferContent askingPrice={askingPrice} playerName={playerName} transferId={transferId} />
 
 
   const handleDeleteTransfer = async () => {
@@ -85,12 +89,15 @@ export const TransferCard = ({
               {teamName || sellerEmail}
             </ChakraCard.Description>
           </VStack>
-          <Text color="primary.900" fontSize={20}>
-            {askingPrice} $
-          </Text>
+          <VStack>
+            <Badge colorPalette="green">{status}</Badge>
+            <Text color="primary.900" fontSize={20}>
+              {askingPrice} $
+            </Text>
+          </VStack>
         </ChakraCard.Body>
         <ChakraCard.Footer justifyContent="flex-end">
-          <Button onClick={() => setOpenDialog(true)}>
+          <Button onClick={() => setOpenDialog(true)} iconRight={buttonActionIcon}>
             {buttonActionText}
           </Button>
         </ChakraCard.Footer>
