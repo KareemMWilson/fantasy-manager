@@ -2,16 +2,23 @@ import { Avatar } from "@/components/Avatar";
 import Dialog from "@/components/Dialog";
 import { TeamDrawer } from "@/components/Drawer/TeamDrawer";
 import { TransferDrawer } from "@/components/Drawer/TransferDrawer";
+import { useAppDispatch, useAppSelector } from "@/hooks/redux";
+import { RootState } from "@/store";
+import { setIsNewUser } from "@/store/slices/authSlice";
 import { HStack, VStack } from "@chakra-ui/react";
 import { useState } from "react";
 import { IoShirt } from "react-icons/io5";
-import { useLocation } from "react-router-dom";
 
 const Home = () => {
-  const {state} = useLocation();
-  const { isNewUser } = state || {}
-
   const [isNotificationOpen, setNotificationOpen] = useState<boolean>(true)
+  const isNewUser = useAppSelector((state: RootState) => state.auth.isNewUser);
+  const dispatch = useAppDispatch()
+
+
+  const handleNotificationBudget = () => {
+    setNotificationOpen(false)
+    dispatch(setIsNewUser(false))
+  }
 
   return (
     <>
@@ -20,7 +27,7 @@ const Home = () => {
     {/** Notification Dialog */}
     {isNewUser && <Dialog
       isOpen={isNotificationOpen}
-      onClose={() => setNotificationOpen(false)}
+      onClose={handleNotificationBudget}
       cancelButton={{
         text: 'Got it',
       }}
