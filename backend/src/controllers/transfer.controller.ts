@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { TransferService } from "../services/transfer.service";
-import { Transfer } from "@prisma/client";
+import { JwtPayload } from "jsonwebtoken";
 
 export const TransferController = {
     getGlobalTransfers: async (req: Request, res: Response) => {
@@ -37,8 +37,8 @@ export const TransferController = {
       deleteUserTransfer: async (req: Request, res: Response) => {
         try {
           const { transferId } = req.params;
-          const userId = req.userId; 
-      
+          const userId = req.user.userId; 
+
           const transfer = await TransferService.getTransferWithOwnershipCheck(transferId, userId as string);
       
           if (!transfer) {

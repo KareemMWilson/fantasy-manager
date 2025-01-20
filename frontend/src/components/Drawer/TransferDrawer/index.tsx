@@ -37,10 +37,10 @@ export const TransferDrawer = () => {
   const userId = useAppSelector((state: RootState) => state.auth.user?.id);
 
   const memoizedSearchQuery = useMemo(() => searchQuery, [searchQuery]);
-  const { data: globalTransfers, isLoading: globalTransfersIsLoading } =
+  const { refetch: refetchGlobalTransfers, data: globalTransfers, isLoading: globalTransfersIsLoading } =
     useGetGlobalTransfersQuery(memoizedSearchQuery);
 
-  const { data: userTransfers, isLoading: userTransfersIsLoading } =
+  const { refetch: refetchUserTransfers, data: userTransfers, isLoading: userTransfersIsLoading } =
     useGetUserTransfersQuery(userId ?? "");
   
     return (
@@ -78,9 +78,9 @@ export const TransferDrawer = () => {
 
           {/**Lists */}
           {whichTransfers === "MY" ? (
-            <List data={userTransfers?.data} isLoading={userTransfersIsLoading} mineTransfer />
+            <List data={userTransfers?.data} isLoading={userTransfersIsLoading} refetchTransfers={refetchUserTransfers} mineTransfer={true}  />
           ): (
-            <List data={globalTransfers?.data} isLoading={globalTransfersIsLoading} />
+            <List data={globalTransfers?.data} isLoading={globalTransfersIsLoading} refetchTransfers={refetchGlobalTransfers} mineTransfer={true} />
           )}
         </DrawerBody>
         <DrawerFooter>

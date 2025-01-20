@@ -18,7 +18,6 @@ export const AuthService = {
       if (!isPasswordValid) {
         throw new Error("Invalid credentials");
       }
-
       const token = generateToken(existingUser);
       return { user: toSafeUser(existingUser), token, isNewUser: false };
     } else {

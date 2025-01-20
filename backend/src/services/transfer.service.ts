@@ -58,6 +58,7 @@ export const TransferService = {
     return await TransferRepo.getUserTransfersByUserId(userId);
   },
   getTransferWithOwnershipCheck: async (transferId: string, userId: string) => {
+    if(!userId) return undefined
     return await TransferRepo.getTransferWithOwnershipCheck(transferId, userId)
   },
   deleteUserTransfer: async (transferId: string) => {

@@ -30,10 +30,12 @@ export interface GetTransferResponseType {
   success: boolean;
 }
 
-
 export interface DeleteTransferResponseType {
-  message: string;
-  success: boolean;
+  [x: string]: unknown;
+  data: {
+    message: string | undefined;
+    success: boolean | undefined;
+  };
 }
 
 export interface QueryType {
@@ -60,17 +62,15 @@ export const teamApi = api.injectEndpoints({
           },
         };
       },
-      keepUnusedDataFor: 30,
     }),
     getUserTransfers: builder.query<GetTransferResponseType, string>({
       query: (userId: string) => {
-        console.log({ddd: userId})
+        console.log({ ddd: userId });
         return {
           url: `/transfers/${userId}`,
           method: "GET",
         };
       },
-      keepUnusedDataFor: 30,
     }),
     deleteUserTransfer: builder.mutation<DeleteTransferResponseType, string>({
       query: (transferId: string) => ({

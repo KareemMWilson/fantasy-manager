@@ -26,4 +26,6 @@ app.use('/auth', authRouter);
 app.use('/team', teamRouter);
 app.use('/transfers', transfersRouter);
 
+
+
 export default app;

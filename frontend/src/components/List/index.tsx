@@ -1,16 +1,21 @@
 import { Spinner, VStack } from "@chakra-ui/react";
 import { TransferCard } from "../Card";
 import { Transfer } from "@/store/services/transfers.Service";
+import { useAppSelector } from "@/hooks/redux";
+import { RootState } from "@/store";
 
 export const List = ({
   data,
   isLoading,
   mineTransfer,
+  refetchTransfers
 }: {
   data: Transfer[] | undefined;
   isLoading: boolean;
   mineTransfer?: boolean
+  refetchTransfers?: () => void 
 }) => {
+  const userId = useAppSelector((state: RootState) => state.auth.user?.id);
   return (
     <VStack gap={5} marginTop='5rem'>
       {isLoading && !data ? (
@@ -29,9 +34,10 @@ export const List = ({
             subtitleLabel="Seller: "
             subtitleInfo={transfer.seller.name || transfer.seller.user.email}
             askingPrice={transfer.askingPrice}
-            buttonText={mineTransfer ? 'Cancel Transfer' : 'Buy'}
-            mineTransfer={mineTransfer}
+            buttonText={mineTransfer && transfer.seller.user.id === userId ? 'Cancel Transfer' : 'Buy'}
+            mineTransfer={mineTransfer && transfer.seller.user.id === userId}
             transferId={transfer.id}
+            refetchTransfers={refetchTransfers!}
           />
         ))
       ) : (

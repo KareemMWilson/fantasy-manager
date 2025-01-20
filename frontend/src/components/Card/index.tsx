@@ -14,6 +14,7 @@ interface CardProps {
   buttonText: string;
   mineTransfer: boolean | undefined;
   transferId: string;
+  refetchTransfers: () => void
 }
 
 export const TransferCard = ({
@@ -24,21 +25,30 @@ export const TransferCard = ({
   buttonText,
   mineTransfer,
   transferId,
+  refetchTransfers
 }: CardProps) => {
   const [openDialog, setOpenDialog] = useState<boolean>(false);
-  const [deleteTransfer, { isLoading }] = useDeleteUserTransferMutation();
-
+  const [deleteTransfer] = useDeleteUserTransferMutation();
+  
   const handleDeleteTransfer = async () => {
-    const { message, success } = await deleteTransfer(transferId).unwrap();
-    if (message && success) {
-      toaster.success({
-        title: "Done",
-        description: "Your Transfer Deleted Successfully",
-      });
-    } else {
+    try {
+      const data = await deleteTransfer(transferId).unwrap();
+      console.log(data);
+    
+      if (data?.success) {
+        toaster.success({
+          title: "Done",
+          description: "Your Transfer Deleted Successfully",
+        });
+        setOpenDialog(false);
+        refetchTransfers()
+      }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      console.error("Error deleting transfer:", error);
       toaster.error({
         title: "Oops",
-        description: "Something went wrong",
+        description: error?.data?.message || 'Error While deleting transfer',
       });
     }
   };

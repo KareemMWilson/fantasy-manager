@@ -1,13 +1,17 @@
 import { NextFunction, Request, Response } from "express";
 import { JwtPayload, verify } from "jsonwebtoken";
 
+
+type UserPayload =  {userId: string, email: string}
 declare global {
   namespace Express {
     interface Request {
-      userId: string | JwtPayload;
+      user: UserPayload
     }
   }
 }
+
+
 
 export const validateUser = async (
   req: Request,
@@ -20,8 +24,8 @@ export const validateUser = async (
   }
 
   try {
-    const decoded = verify(token, process.env.JWT_SECRET!);
-    req.userId = decoded;
+    const decoded = verify(token, process.env.JWT_SECRET!) as UserPayload;
+    req.user = decoded;
     next();
   } catch (error) {
     return res.status(401).json({ success: false, message: "Invalid token" });
