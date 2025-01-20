@@ -1,4 +1,4 @@
-import { PrismaClient, User } from "@prisma/client";
+import { Prisma, PrismaClient, User } from "@prisma/client";
 import { AuthInput } from "../validations/auth.validation";
 import { prisma } from "../db/prisma";
 
@@ -15,18 +15,22 @@ export const AuthRepo = {
     });
   },
 
-  getUserById: async (userId: string): Promise<User> => {
+  getUserById: async (userId: string): Promise<Prisma.UserGetPayload<{ include: { team: { include: { players: true } } } }>> => {
     const user = await prisma.user.findUnique({
       where: { id: userId },
       include: {
-        team: true,
+        team: {
+          include: {
+            players: true,
+          },
+        },
       },
     });
-
+  
     if (!user) {
       throw new Error(`User with ID ${userId} not found`);
     }
-
+  
     return user;
   },
 };

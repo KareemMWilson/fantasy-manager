@@ -16,7 +16,7 @@ export const Toaster = () => {
         <Toast.Root key={toast.id} width='25rem' height='4rem' borderRadius='1rem' alignItems='center'>
           <Toast.Title>{toast.title}</Toast.Title>
           <Toast.Description>{toast.description}</Toast.Description>
-          <Toast.CloseTrigger background='inherit' height='3.4rem'>
+          <Toast.CloseTrigger background='inherit' height='3.4rem' position='initial'>
             <BiXCircle size={30} />
           </Toast.CloseTrigger>
         </Toast.Root>

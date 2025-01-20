@@ -1,4 +1,5 @@
 import Button from "@/components/Button";
+import { toaster } from "@/components/Toaster";
 import { useAppSelector } from "@/hooks/redux";
 import { RootState } from "@/store";
 import { useBuyPlayerMutation } from "@/store/services/transfers.Service";
@@ -9,12 +10,14 @@ interface BuyTransferContentProps {
   askingPrice: number;
   playerName: string;
   transferId: string;
+  refetchTransfers: () => void
 }
 
 export const BuyTransferContent = ({
   askingPrice,
   playerName,
   transferId,
+  refetchTransfers
 }: BuyTransferContentProps) => {
   const userId = useAppSelector((state: RootState) => state.auth.user?.id);
   const [offeredPrice, setOfferedPrice] = useState<number>(askingPrice);
@@ -27,7 +30,23 @@ export const BuyTransferContent = ({
 
   const buy = async () => {
     if (userId) {
-      await buyPlayer({ buyerId: userId, transferId, offeredPrice });
+      try {
+        const data = await buyPlayer({ buyerId: userId, transferId, offeredPrice }).unwrap()
+        console.log({data})
+        toaster.success({
+          title: 'Done',
+          description: data.message as string || 'Something Went Wrong',
+        })
+        refetchTransfers()
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } catch (error: any) {
+        console.error(error)
+        toaster.error({
+          title: 'Opps',
+          description: error?.data?.message || 'Something Went Wrong',
+        })
+      }
+      
     }
   };
 

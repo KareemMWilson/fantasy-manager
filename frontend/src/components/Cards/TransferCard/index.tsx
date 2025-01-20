@@ -9,7 +9,7 @@ import {
 } from "@/store/services/transfers.Service";
 import { toaster } from "../../Toaster";
 import { GiBuyCard, GiCancel } from "react-icons/gi";
-import { BuyTransferContent } from "@/components/Drawer/TransferDrawer/BuyTransfer";
+import { BuyTransferContent } from "@/components/Cards/TransferCard/BuyTransfer";
 
 interface TransferCardProps {
   mineTransfer: boolean | undefined;
@@ -35,7 +35,7 @@ export const TransferCard = ({
 
   const content = mineTransfer
     ? "Are you sure you want to cancel Transfer."
-    : <BuyTransferContent askingPrice={askingPrice} playerName={playerName} transferId={transferId} />
+    : <BuyTransferContent askingPrice={askingPrice} playerName={playerName} transferId={transferId} refetchTransfers={refetchTransfers}/>
 
 
   const handleDeleteTransfer = async () => {

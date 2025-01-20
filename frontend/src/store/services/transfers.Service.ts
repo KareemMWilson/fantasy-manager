@@ -45,6 +45,7 @@ export interface QueryType {
 }
 
 export interface BuyPlayerResponseType {
+  [x: string]: unknown;
   data: {
     message: string | undefined;
     success: boolean | undefined;

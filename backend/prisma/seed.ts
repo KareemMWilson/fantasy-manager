@@ -1,98 +1,94 @@
-// import { players } from "./data/players";
-// import { Position, PrismaClient } from "@prisma/client";
-
-// const prisma = new PrismaClient();
-
-// async function main() {
-
-//   for (const player of players) {
-//     await prisma.player.create({
-//       data: {
-//         ...player,
-//         position: player.position as Position,
-//       },
-//     });
-//   }
-// }
-
-// main()
-//   .catch((e) => {
-//     console.error(e);
-//     process.exit(1);
-//   })
-//   .finally(async () => {
-//     await prisma.$disconnect();
-//   });
-
 import { players } from "./data/players";
 import { Position, PrismaClient, TransferStatus } from "@prisma/client";
 import bcrypt from "bcrypt";
 
 const prisma = new PrismaClient();
 
-async function main() {
+async function resetDatabase() {
+  console.log("Resetting database...");
+
+  const tables = ["Transfer", "Player", "Team", "User"];
+
+  for (const table of tables) {
+    await prisma.$executeRawUnsafe(`TRUNCATE TABLE "${table}" CASCADE;`);
+  }
+
+  console.log("Database reset complete.");
+}
+
+async function seedDatabase() {
   console.log("Seeding database...");
 
-  const password1 = await bcrypt.hash("password1", 10); 
-  const password2 = await bcrypt.hash("password2", 10); 
+  const password1 = await bcrypt.hash("password1", 10);
+  const password2 = await bcrypt.hash("password2", 10);
 
   const users = await Promise.all([
     prisma.user.create({
       data: {
         email: "user1@example.com",
         password: password1,
-        budget: 5000000,
       },
     }),
     prisma.user.create({
       data: {
         email: "user2@example.com",
         password: password2,
-        budget: 6000000,
       },
     }),
   ]);
 
-  const teams = await Promise.all(
-    users.map((user, index) =>
-      prisma.team.create({
+  for (const user of users) {
+    const team = await prisma.team.create({
+      data: {
+        name: `Team for ${user.email}`,
+        userId: user.id,
+      },
+    });
+
+  
+    const teamPlayers = players
+      .sort(() => Math.random() - 0.5)
+      .slice(0, 20); 
+
+    for (const player of teamPlayers) {
+      const createdPlayer = await prisma.player.create({
         data: {
-          name: `Team ${index + 1}`,
-          userId: user.id,
+          name: player.name,
+          position: player.position as Position,
+          value: player.value,
+          club: player.club,
+          teams: {
+            connect: { id: team.id }, 
+          },
         },
-      })
-    )
-  );
+      });
 
-  for (const player of players) {
-    const randomTeam = teams[Math.floor(Math.random() * teams.length)];
-
-    const createdPlayer = await prisma.player.create({
-      data: {
-        name: player.name,
-        position: player.position as Position,
-        value: player.value,
-        club: player.club,
-        teamId: randomTeam.id,
-      },
-    });
-
-    await prisma.transfer.create({
-      data: {
-        playerId: createdPlayer.id,
-        askingPrice: Math.floor(player.value * 1.1),
-        status: TransferStatus.LISTED,
-        sellerId: randomTeam.id,
-      },
-    });
+  
+      const isInTransfer = teamPlayers.indexOf(player) < 2;
+      if (isInTransfer) {
+        await prisma.transfer.create({
+          data: {
+            playerId: createdPlayer.id,
+            askingPrice: Math.floor(player.value * 1.1),
+            status: TransferStatus.LISTED,
+            sellerId: team.id,
+          },
+        });
+      }
+    }
   }
 
   console.log("Seeding completed.");
 }
 
+async function main() {
+  await resetDatabase(); 
+  await seedDatabase(); 
+}
+
 main()
   .catch((e) => {
-    console.error(e);
+    console.error("Error seeding database:", e);
     process.exit(1);
   })
   .finally(async () => {

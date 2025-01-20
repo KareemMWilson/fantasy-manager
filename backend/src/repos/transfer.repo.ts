@@ -1,3 +1,4 @@
+import { TransferStatus } from "@prisma/client";
 import { prisma } from "../db/prisma";
 
 type WhereClauseType = {
@@ -19,10 +20,18 @@ type WhereClauseType = {
   };
 };
 
+export type CompleteTransferProps = {
+  transferId: string;
+  offeredPrice: number;
+  buyerTeamId: string;
+  sellerTeamId: string;
+  playerId: string;
+};
+
 export const TransferRepo = {
   getGlobalTransfers: async (whereClause: WhereClauseType) => {
     return await prisma.transfer.findMany({
-      where: whereClause,
+      where: { ...whereClause, status: "LISTED" },
       include: {
         player: {
           select: {
@@ -47,9 +56,9 @@ export const TransferRepo = {
     });
   },
   getUserTransfersByUserId: async (userId: string) => {
-    console.log({userId})
+    console.log({ userId });
     return await prisma.transfer.findMany({
-      where:{
+      where: {
         seller: {
           user: {
             id: userId,
@@ -95,6 +104,81 @@ export const TransferRepo = {
   deleteUserTransfer: async (transferId: string) => {
     return prisma.transfer.delete({
       where: { id: transferId },
+    });
+  },
+  getTransferById: async (transferId: string) => {
+    return prisma.transfer.findFirst({
+      where: {
+        id: transferId,
+      },
+    });
+  },
+  completeTransfer: async ({
+    transferId,
+    offeredPrice,
+    buyerTeamId,
+    sellerTeamId,
+    playerId,
+  }: CompleteTransferProps): Promise<{
+    success: boolean;
+    message: string;
+    status: number;
+  }> => {
+    return prisma.$transaction(async (prisma) => {
+      try {
+        //remove player from the seller's team
+        await prisma.team.update({
+          where: { id: sellerTeamId },
+          data: {
+            players: {
+              disconnect: { id: playerId },
+            },
+          },
+        });
+
+        //add player to the buyer's team
+        await prisma.team.update({
+          where: { id: buyerTeamId },
+          data: {
+            players: {
+              connect: { id: playerId },
+            },
+          },
+        });
+
+        //update buyer's budget
+        await prisma.team.update({
+          where: { id: buyerTeamId },
+          data: { budget: { decrement: offeredPrice } },
+        });
+
+        //update seller's budget
+        await prisma.team.update({
+          where: { id: sellerTeamId },
+          data: { budget: { increment: offeredPrice } },
+        });
+
+        // mark the transfer as completed
+        await prisma.transfer.update({
+          where: { id: transferId },
+          data: {
+            status: "SOLD",
+            soldAt: new Date(),
+          },
+        });
+        return {
+          success: true,
+          message: "Successfully assigning player to the new team",
+          status: 200,
+        };
+      } catch (error) {
+        console.error(error);
+        return {
+          success: false,
+          message: "Something went wrong while assigning player to new team",
+          status: 500,
+        };
+      }
     });
   },
 };
