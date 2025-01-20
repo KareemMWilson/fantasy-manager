@@ -30,8 +30,36 @@ export const TransferController = {
           
           res.status(200).json({ success: true, data: userTransfers });
         } catch (error) {
-          console.error("Error fetching global transfers:", error);
+          console.error("Error fetching user transfers:", error);
           res.status(500).json({ success: false, message: "Internal Server Error" });
+        }
+      },
+      deleteUserTransfer: async (req: Request, res: Response) => {
+        try {
+          const { transferId } = req.params;
+          const userId = req.userId; 
+      
+          const transfer = await TransferService.getTransferWithOwnershipCheck(transferId, userId as string);
+      
+          if (!transfer) {
+            return res.status(403).json({
+              success: false,
+              message: "You do not have permission to delete this transfer, or it is no longer listed.",
+            });
+          }
+      
+          await TransferService.deleteUserTransfer(transferId);
+      
+          res.status(200).json({
+            success: true,
+            message: `Transfer Stopped successfully`,
+          });
+        } catch (error) {
+          console.error("Error deleting transfer:", error);
+          res.status(500).json({
+            success: false,
+            message: "Internal Server Error",
+          });
         }
       },
 };

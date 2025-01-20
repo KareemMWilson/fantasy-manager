@@ -3,6 +3,8 @@ import Button from "../Button";
 import { IoShirt } from "react-icons/io5";
 import Dialog from "../Dialog";
 import { useState } from "react";
+import { useDeleteUserTransferMutation } from "@/store/services/transfers.Service";
+import { toaster } from "../Toaster";
 
 interface CardProps {
   title: string;
@@ -11,6 +13,7 @@ interface CardProps {
   askingPrice: number;
   buttonText: string;
   mineTransfer: boolean | undefined;
+  transferId: string;
 }
 
 export const TransferCard = ({
@@ -20,16 +23,40 @@ export const TransferCard = ({
   askingPrice,
   buttonText,
   mineTransfer,
+  transferId,
 }: CardProps) => {
   const [openDialog, setOpenDialog] = useState<boolean>(false);
+  const [deleteTransfer, { isLoading }] = useDeleteUserTransferMutation();
+
+  const handleDeleteTransfer = async () => {
+    const { message, success } = await deleteTransfer(transferId).unwrap();
+    if (message && success) {
+      toaster.success({
+        title: "Done",
+        description: "Your Transfer Deleted Successfully",
+      });
+    } else {
+      toaster.error({
+        title: "Oops",
+        description: "Something went wrong",
+      });
+    }
+  };
   return (
     <>
       <Dialog
         isOpen={openDialog}
         onClose={() => setOpenDialog(false)}
-        cancelButton={{ text: mineTransfer ? "Cancel Transfer" : "Cancel" }}
+        cancelButton={{
+          text: mineTransfer ? "Cancel Transfer" : "Cancel",
+          onClick: mineTransfer ? handleDeleteTransfer : undefined,
+        }}
       >
-        <VStack>{mineTransfer ? "Are you sure you want to cancel Transfer." : "Buying"}</VStack>
+        <VStack>
+          {mineTransfer
+            ? "Are you sure you want to cancel Transfer."
+            : "Buying"}
+        </VStack>
       </Dialog>
       <ChakraCard.Root width="100%" height="fit-content" borderRadius="2rem">
         <ChakraCard.Body

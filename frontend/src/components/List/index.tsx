@@ -31,6 +31,7 @@ export const List = ({
             askingPrice={transfer.askingPrice}
             buttonText={mineTransfer ? 'Cancel Transfer' : 'Buy'}
             mineTransfer={mineTransfer}
+            transferId={transfer.id}
           />
         ))
       ) : (

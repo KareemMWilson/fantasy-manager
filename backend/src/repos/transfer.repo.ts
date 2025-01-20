@@ -79,4 +79,22 @@ export const TransferRepo = {
       },
     });
   },
+  getTransferWithOwnershipCheck: async (transferId: string, userId: string) => {
+    return prisma.transfer.findFirst({
+      where: {
+        id: transferId,
+        status: "LISTED",
+        seller: {
+          user: {
+            id: userId,
+          },
+        },
+      },
+    });
+  },
+  deleteUserTransfer: async (transferId: string) => {
+    return prisma.transfer.delete({
+      where: { id: transferId },
+    });
+  },
 };

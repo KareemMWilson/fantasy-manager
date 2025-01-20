@@ -30,6 +30,12 @@ export interface GetTransferResponseType {
   success: boolean;
 }
 
+
+export interface DeleteTransferResponseType {
+  message: string;
+  success: boolean;
+}
+
 export interface QueryType {
   playerName: string;
   teamName: string;
@@ -66,6 +72,12 @@ export const teamApi = api.injectEndpoints({
       },
       keepUnusedDataFor: 30,
     }),
+    deleteUserTransfer: builder.mutation<DeleteTransferResponseType, string>({
+      query: (transferId: string) => ({
+        url: `/transfers/${transferId}`,
+        method: "DELETE",
+      }),
+    }),
   }),
 });
 
@@ -74,4 +86,5 @@ export const {
   useLazyGetGlobalTransfersQuery,
   useGetUserTransfersQuery,
   useLazyGetUserTransfersQuery,
+  useDeleteUserTransferMutation,
 } = teamApi;

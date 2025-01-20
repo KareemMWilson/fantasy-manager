@@ -33,14 +33,7 @@ export const AuthController ={
     try {
       const accessToken = req.headers.authorization?.split(" ")[1];
 
-      if (!accessToken) {
-        return res.status(401).json({
-          success: false,
-          error: "Access token is missing",
-        });
-      }
-
-      const user = await AuthService.me(accessToken);
+      const user = await AuthService.me(accessToken!);
 
       if (!user) {
         return res.status(404).json({
