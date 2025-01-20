@@ -5,7 +5,7 @@ import { validateAuthInputs } from "../middlewares/validateInputs/validateInputs
 const router = Router();
 
 
-router.post("/", validateAuthInputs, AuthController.authenticate);
 router.get("/me", AuthController.me);
+router.post("/", validateAuthInputs, AuthController.authenticate);
 
 export default router;

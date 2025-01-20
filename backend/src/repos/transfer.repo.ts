@@ -46,4 +46,37 @@ export const TransferRepo = {
       },
     });
   },
+  getUserTransfersByUserId: async (userId: string) => {
+    console.log({userId})
+    return await prisma.transfer.findMany({
+      where:{
+        seller: {
+          user: {
+            id: userId,
+          },
+        },
+      },
+      include: {
+        player: {
+          select: {
+            id: true,
+            name: true,
+            position: true,
+          },
+        },
+        seller: {
+          select: {
+            id: true,
+            name: true,
+            user: {
+              select: {
+                id: true,
+                email: true,
+              },
+            },
+          },
+        },
+      },
+    });
+  },
 };

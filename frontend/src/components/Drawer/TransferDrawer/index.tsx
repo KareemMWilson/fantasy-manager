@@ -10,14 +10,19 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@chakra-ui/react";
-import {  useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { FaExchangeAlt } from "react-icons/fa";
 import { TransferFilters } from "./TransferFilters";
-import { QueryType, useGetGlobalTransfersQuery } from "@/store/services/transfers.Service";
+import {
+  QueryType,
+  useGetGlobalTransfersQuery,
+  useGetUserTransfersQuery,
+} from "@/store/services/transfers.Service";
 import { List } from "@/components/List";
+import { useAppSelector } from "@/hooks/redux";
+import { RootState } from "@/store";
 
-type Transfers = 'GLOBAL' | 'MY'
-
+type Transfers = "GLOBAL" | "MY";
 
 export const defaultSearchQuery: QueryType = {
   playerName: "",
@@ -27,14 +32,18 @@ export const defaultSearchQuery: QueryType = {
 
 export const TransferDrawer = () => {
   const [hovered, setHovered] = useState<boolean>(false);
-  const [whichTransfers, setWhichTransfers] = useState<Transfers>('MY')
+  const [whichTransfers, setWhichTransfers] = useState<Transfers>("MY");
   const [searchQuery, setSearchQuery] = useState<QueryType>(defaultSearchQuery);
+  const userId = useAppSelector((state: RootState) => state.auth.user?.id);
+
   const memoizedSearchQuery = useMemo(() => searchQuery, [searchQuery]);
-  const {data: globalTransfers, isLoading} = useGetGlobalTransfersQuery(memoizedSearchQuery);
+  const { data: globalTransfers, isLoading: globalTransfersIsLoading } =
+    useGetGlobalTransfersQuery(memoizedSearchQuery);
 
-
-
-  return (
+  const { data: userTransfers, isLoading: userTransfersIsLoading } =
+    useGetUserTransfersQuery(userId ?? "");
+  
+    return (
     <DrawerRoot placement="end">
       <DrawerBackdrop />
       <DrawerTrigger asChild position="absolute" right="5rem" bottom="3rem">
@@ -56,14 +65,23 @@ export const TransferDrawer = () => {
         bg="green.300"
       >
         <DrawerHeader>
-          <DrawerTitle color='primary.900'>Transfers List</DrawerTitle>
+          <DrawerTitle color="primary.900">Transfers List</DrawerTitle>
         </DrawerHeader>
         <DrawerBody>
           {/**filters */}
-          <TransferFilters whichTransfers={whichTransfers} setWhichTransfers={setWhichTransfers} setSearchQuery={setSearchQuery}  searchQuery={searchQuery}/>
+          <TransferFilters
+            whichTransfers={whichTransfers}
+            setWhichTransfers={setWhichTransfers}
+            setSearchQuery={setSearchQuery}
+            searchQuery={searchQuery}
+          />
 
-          {/**List */}
-          {whichTransfers === 'GLOBAL' && <List data={globalTransfers?.data} isLoading={isLoading}/>}
+          {/**Lists */}
+          {whichTransfers === "MY" ? (
+            <List data={userTransfers?.data} isLoading={userTransfersIsLoading} mineTransfer />
+          ): (
+            <List data={globalTransfers?.data} isLoading={globalTransfersIsLoading} />
+          )}
         </DrawerBody>
         <DrawerFooter>
           <DrawerActionTrigger asChild>

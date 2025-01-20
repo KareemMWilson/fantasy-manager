@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
-import ReactDOM from "react-dom";
-import { Box, VStack, HStack, Text } from "@chakra-ui/react";
+import { Box, VStack, HStack, Text, Portal } from "@chakra-ui/react";
 import Button from "../Button";
 
 interface DialogProps {
@@ -38,67 +37,75 @@ const Dialog = ({
 
   if (!isOpen) return null;
 
-
-  return ReactDOM.createPortal(
-    <Box
-      position="fixed"
-      top="0"
-      left="0"
-      w="100vw"
-      h="100vh"
-      bg="blackAlpha.700"
-      display="flex"
-      alignItems="center"
-      justifyContent="center"
-      zIndex="overlay"
-    >
+  return (
+    <Portal disabled>
       <Box
-        bg="white"
-        borderRadius="lg"
-        boxShadow="2xl"
-        maxW="500px"
-        w="90%"
-        p={6}
+        position="fixed"
+        top="0"
+        left="0"
+        w="100vw"
+        h="100vh"
+        bg="blackAlpha.700"
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+        zIndex={9999999}
+        onClick={(e) => {
+          if (e.target === e.currentTarget) {
+            onClose();
+          }
+        }}
       >
-        <VStack gap={6} align="stretch">
-          {title && (
-            <Text
-              fontSize="2xl"
-              fontWeight="bold"
-              textAlign="center"
-              color="green.600"
-            >
-              {title}
-            </Text>
-          )}
-          <Box fontSize="md" color="gray.700">
-            {children}
-          </Box>
-          <HStack justify="flex-end" gap={4}>
-            {cancelButton && (
-              <Button
-                variant="outline"
-                colorScheme="gray"
-                onClick={cancelButton.onClick || onClose}
-                _hover={{ bg: "gray.100" }}
+        <Box
+          bg="white"
+          borderRadius="lg"
+          boxShadow="2xl"
+          maxW="500px"
+          w="90%"
+          p={6}
+          zIndex={99999999}
+        >
+          <VStack gap={6} align="stretch">
+            {title && (
+              <Text
+                fontSize="2xl"
+                fontWeight="bold"
+                textAlign="center"
+                color="green.600"
               >
-                {cancelButton.text}
-              </Button>
+                {title}
+              </Text>
             )}
-            {confirmButton && (
-              <Button
-                colorScheme="blue"
-                onClick={confirmButton.onClick}
-                _hover={{ bg: "blue.500", color: "white" }}
-              >
-                {confirmButton.text}
-              </Button>
-            )}
-          </HStack>
-        </VStack>
+            <Box fontSize="md" color="gray.700">
+              {children}
+            </Box>
+            <HStack justify="flex-end" gap={4}>
+              {cancelButton && (
+                <Button
+                  variant="outline"
+                  colorScheme="gray"
+                  cursor="pointer"
+                  onClick={cancelButton.onClick || onClose}
+                  _hover={{ bg: "gray.100" }}
+                >
+                  {cancelButton.text}
+                </Button>
+              )}
+              {confirmButton && (
+                <Button
+                  colorScheme="blue"
+                  cursor="pointer"
+                  onClick={confirmButton.onClick}
+                  _hover={{ bg: "blue.500", color: "white" }}
+                >
+                  {confirmButton.text}
+                </Button>
+              )}
+            </HStack>
+          </VStack>
+        </Box>
       </Box>
-    </Box>,
-    document.body
+    </Portal>
   );
 };
 

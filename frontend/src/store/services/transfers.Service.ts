@@ -4,10 +4,10 @@ export interface Transfer {
   id: string;
   askingPrice: number;
   status: "LISTED" | "SOLD" | "CANCELED";
-  listedAt: string; 
+  listedAt: string;
   soldAt: string | null;
-  createdAt: string; 
-  updatedAt: string; 
+  createdAt: string;
+  updatedAt: string;
   playerId: string;
   player: {
     id: string;
@@ -25,8 +25,8 @@ export interface Transfer {
   };
 }
 
-export interface GlobalTransferResponseType {
-  data: Transfer[]
+export interface GetTransferResponseType {
+  data: Transfer[];
   success: boolean;
 }
 
@@ -38,10 +38,10 @@ export interface QueryType {
 
 export const teamApi = api.injectEndpoints({
   endpoints: (builder) => ({
-    getGlobalTransfers: builder.query<GlobalTransferResponseType, QueryType>({
+    getGlobalTransfers: builder.query<GetTransferResponseType, QueryType>({
       query: (query: QueryType) => {
-        const {playerName, teamName, priceRange} = query
-        const [minPrice, maxPrice] = priceRange
+        const { playerName, teamName, priceRange } = query;
+        const [minPrice, maxPrice] = priceRange;
 
         return {
           url: `/transfers`,
@@ -50,8 +50,18 @@ export const teamApi = api.injectEndpoints({
             playerName,
             teamName,
             minPrice,
-            maxPrice
-          }
+            maxPrice,
+          },
+        };
+      },
+      keepUnusedDataFor: 30,
+    }),
+    getUserTransfers: builder.query<GetTransferResponseType, string>({
+      query: (userId: string) => {
+        console.log({ddd: userId})
+        return {
+          url: `/transfers/${userId}`,
+          method: "GET",
         };
       },
       keepUnusedDataFor: 30,
@@ -59,4 +69,9 @@ export const teamApi = api.injectEndpoints({
   }),
 });
 
-export const { useGetGlobalTransfersQuery, useLazyGetGlobalTransfersQuery } = teamApi;
+export const {
+  useGetGlobalTransfersQuery,
+  useLazyGetGlobalTransfersQuery,
+  useGetUserTransfersQuery,
+  useLazyGetUserTransfersQuery,
+} = teamApi;

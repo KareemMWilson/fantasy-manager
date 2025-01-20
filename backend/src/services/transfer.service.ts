@@ -54,4 +54,7 @@ export const TransferService = {
   getGlobalTransfers: async (filters: TransferFilters) => {
     return await TransferRepo.getGlobalTransfers(generateWhereClause(filters));
   },
+  getUserTransfersByUserId: async (userId: string) => {
+    return await TransferRepo.getUserTransfersByUserId(userId);
+  },
 };

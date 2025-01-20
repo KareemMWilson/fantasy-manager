@@ -22,4 +22,16 @@ export const TransferController = {
           res.status(500).json({ success: false, message: "Internal Server Error" });
         }
       },
+      getUserTransfersByUserId: async (req: Request, res: Response) => {
+        try {
+          const { userId } = req.params;
+          console.log({userId})
+          const userTransfers = await TransferService.getUserTransfersByUserId(String(userId));
+          
+          res.status(200).json({ success: true, data: userTransfers });
+        } catch (error) {
+          console.error("Error fetching global transfers:", error);
+          res.status(500).json({ success: false, message: "Internal Server Error" });
+        }
+      },
 };
