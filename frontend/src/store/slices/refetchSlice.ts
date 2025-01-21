@@ -26,7 +26,9 @@ const refetchSlice = createSlice({
       state.refetchAllData = action.payload;
     },
     doneRefetching: (state) => {
-        state = initialState
+      state.team = false;
+      state.transfers = false;
+      state.refetchAllData = false;
       },
   },
 });

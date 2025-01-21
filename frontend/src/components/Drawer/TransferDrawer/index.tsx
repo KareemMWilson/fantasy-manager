@@ -48,7 +48,6 @@ export const TransferDrawer = () => {
     if (refetchAllData || transfers) {
       refetchingAllTransfers();
       dispatch(doneRefetching())
-
     }
   }, [refetchAllData, transfers]);
 
