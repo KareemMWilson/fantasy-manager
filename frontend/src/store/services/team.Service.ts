@@ -19,6 +19,7 @@ export interface Player {
   position: 'GOALKEEPER' | 'DEFENDER' | 'MIDFIELDER' | 'ATTACKER';
   club: string;
   value: number;
+  isInTransfer: boolean
 }
 
 export const teamApi = api.injectEndpoints({

@@ -2,42 +2,39 @@ import Button from "@/components/Button";
 import { toaster } from "@/components/Toaster";
 import { useAppSelector } from "@/hooks/redux";
 import { RootState } from "@/store";
-import { useBuyPlayerMutation } from "@/store/services/transfers.Service";
+import { Player } from "@/store/services/team.Service";
+import { useSellPlayerMutation } from "@/store/services/transfers.Service";
 import { Input, VStack, Text } from "@chakra-ui/react";
 import { useState } from "react";
 
-interface BuyTransferContentProps {
-  askingPrice: number;
-  playerName: string;
-  transferId: string;
-  refetchTransfers: () => void
+interface SellPlayerContentProps {
+  player: Player
+  refetch: () => void
 }
 
-export const BuyTransferContent = ({
-  askingPrice,
-  playerName,
-  transferId,
-  refetchTransfers
-}: BuyTransferContentProps) => {
+export const SellPlayerContent = ({
+  player,
+  refetch
+}: SellPlayerContentProps) => {
   const userId = useAppSelector((state: RootState) => state.auth.user?.id);
-  const [offeredPrice, setOfferedPrice] = useState<number>(askingPrice);
-  const [buyPlayer] = useBuyPlayerMutation();
+  const [askingPrice, setAskingPrice] = useState<number>(player.value);
+  const [sellPlayer] = useSellPlayerMutation();
 
-  const handleOfferPriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const offered = parseFloat(e.target.value);
-    setOfferedPrice(offered);
+  const handleAskingPriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const askingPriceUserTyped = Number(e.target.value);
+    setAskingPrice(askingPriceUserTyped);
   };
 
-  const buy = async () => {
+  const sell = async () => {
     if (userId) {
       try {
-        const data = await buyPlayer({ buyerId: userId, transferId, offeredPrice }).unwrap()
+        const data = await sellPlayer({ sellerId: userId, playerId: player.id, askingPrice }).unwrap()
         console.log({data})
         toaster.success({
           title: 'Done',
-          description: data.message as string || 'Something Went Wrong',
+          description: data.message as string || 'Successfully Creating new Transfer',
         })
-        refetchTransfers()
+        refetch()
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error: any) {
         console.error(error)
@@ -53,7 +50,7 @@ export const BuyTransferContent = ({
   return (
     <VStack gap={5}>
       <Text color="primary.900" fontSize={30} margin={5} fontFamily="monospace">
-        {playerName}
+        {player.name}
       </Text>
       <Text alignSelf="flex-start" color="primary.700">
         <span style={{ fontWeight: 900 }}>Asking Price: </span>
@@ -62,16 +59,15 @@ export const BuyTransferContent = ({
       <Input
         fontSize={20}
         type="number"
-        value={offeredPrice}
+        value={askingPrice}
         color="primary.600"
-        onChange={handleOfferPriceChange}
+        onChange={handleAskingPriceChange}
       ></Input>
       <Text>
-        <span>Note: </span>You have to transfer the player at least 95% from
-        asking price
+        <span>Note: </span>Your Player will be Listed in Transfers List until another Team buy it
       </Text>
-      <Button alignSelf="flex-end" width={150} onClick={buy}>
-        B u y
+      <Button alignSelf="flex-end" width={150} onClick={sell}>
+        S e l l
       </Button>
     </VStack>
   );

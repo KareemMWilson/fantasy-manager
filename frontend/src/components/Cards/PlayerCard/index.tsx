@@ -6,41 +6,31 @@ import { useState } from "react";
 // import { toaster } from "../../Toaster";
 import { Player } from "@/store/services/team.Service";
 import { GiBuyCard, GiCancel } from "react-icons/gi";
+import { SellPlayerContent } from "./sellPlayer";
 // import { useGetUserTeamQuery } from "@/store/services/team.Service";
 
 interface PlayerCardProps {
-  player: Player
-  refetchPlayers?: () => void
+  player: Player;
+  refetchPlayers?: () => void;
 }
 
-export const PlayerCard = ({
-  player,
-}: PlayerCardProps) => {
+export const PlayerCard = ({ player }: PlayerCardProps) => {
   const [openDialog, setOpenDialog] = useState<boolean>(false);
-  
 
-  const { id: playerId, name: playerName, club, value  } = player;
+  const { id: playerId, name: playerName, club, value, isInTransfer } = player;
   const buttonActionText = player ? "Sell Player" : "Cancel Transfer";
-  const buttonActionIcon = player ? < GiBuyCard />  : <GiCancel />
-  const content = <></>
-
-  const handleCreateTransfer = async () => {
-    
-  };
+  const buttonActionIcon = player ? <GiBuyCard /> : <GiCancel />;
+  const content = (
+    <SellPlayerContent
+      player={player}
+      refetch={() => console.log("refetched")}
+    />
+  );
 
   return (
     <>
-      <Dialog
-        isOpen={openDialog}
-        onClose={() => setOpenDialog(false)}
-        cancelButton={{
-          text: player ? "Cancel Transfer" : "Cancel",
-          onClick: player ? handleCreateTransfer : undefined,
-        }}
-      >
-        <VStack>
-          {content}
-        </VStack>
+      <Dialog isOpen={openDialog} onClose={() => setOpenDialog(false)}>
+        <VStack>{content}</VStack>
       </Dialog>
       <ChakraCard.Root width="100%" height="fit-content" borderRadius="2rem">
         <ChakraCard.Body
@@ -65,9 +55,16 @@ export const PlayerCard = ({
           </VStack>
         </ChakraCard.Body>
         <ChakraCard.Footer justifyContent="flex-end">
-          <Button onClick={() => setOpenDialog(true)} iconRight={buttonActionIcon}>
-            {buttonActionText}
-          </Button>
+          {isInTransfer ? (
+            <Badge colorPalette="red">Listed for sale</Badge>
+          ) : (
+            <Button
+              onClick={() => setOpenDialog(true)}
+              iconRight={buttonActionIcon}
+            >
+              {buttonActionText}
+            </Button>
+          )}
         </ChakraCard.Footer>
       </ChakraCard.Root>
     </>

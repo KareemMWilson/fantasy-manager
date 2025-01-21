@@ -58,6 +58,20 @@ export interface BuyPlayerRequestPayloadType {
     offeredPrice: number
 }
 
+export interface SellPlayerResponseType {
+  [x: string]: unknown;
+  data: {
+    message: string | undefined;
+    success: boolean | undefined;
+  };
+}
+
+export interface SellPlayerRequestPayloadType {
+  askingPrice: number;
+  playerId: string;
+  sellerId: string;
+}
+
 export const transferApi = api.injectEndpoints({
   endpoints: (builder) => ({
     getGlobalTransfers: builder.query<GetTransferResponseType, QueryType>({
@@ -66,7 +80,7 @@ export const transferApi = api.injectEndpoints({
         const [minPrice, maxPrice] = priceRange;
 
         return {
-          url: `/transfers`,
+          url: `/transfer`,
           method: "GET",
           params: {
             playerName,
@@ -81,25 +95,36 @@ export const transferApi = api.injectEndpoints({
       query: (userId) => {
         console.log({ ddd: userId });
         return {
-          url: `/transfers/${userId}`,
+          url: `/transfer/${userId}`,
           method: "GET",
         };
       },
     }),
     deleteUserTransfer: builder.mutation<DeleteTransferResponseType, string>({
       query: (transferId) => ({
-        url: `/transfers/${transferId}`,
+        url: `/transfer/${transferId}`,
         method: "DELETE",
       }),
     }),
     buyPlayer: builder.mutation<BuyPlayerResponseType, BuyPlayerRequestPayloadType>({
       query: ({transferId, buyerId, offeredPrice}) => ({
-        url: `/transfers/buy`,
+        url: `/transfer/buy`,
         method: "POST",
         body: {
           transferId,
           buyerId,
           offeredPrice
+        }
+      }),
+    }),
+    sellPlayer: builder.mutation<SellPlayerResponseType, SellPlayerRequestPayloadType>({
+      query: ({askingPrice, sellerId, playerId}) => ({
+        url: `/transfer/sell`,
+        method: "POST",
+        body: {
+          askingPrice,
+          sellerId,
+          playerId
         }
       }),
     }),
@@ -112,5 +137,6 @@ export const {
   useGetUserTransfersQuery,
   useLazyGetUserTransfersQuery,
   useDeleteUserTransferMutation,
-  useBuyPlayerMutation
+  useBuyPlayerMutation,
+  useSellPlayerMutation
 } = transferApi;

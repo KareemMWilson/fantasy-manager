@@ -20,7 +20,7 @@ import { BiXCircle } from "react-icons/bi";
 export const TeamDrawer = ({
   players,
   isLoading,
-  teamBudget
+  teamBudget,
 }: {
   players: Player[] | undefined;
   isLoading: boolean;
@@ -47,11 +47,22 @@ export const TeamDrawer = ({
           </DrawerTitle>
         </DrawerHeader>
         <DrawerBody>
-          {players && <Text color='primary.800' alignSelf='flex-start' marginY={5} fontSize={20} fontFamily='mono'><span>Team Budget: </span>{teamBudget} $</Text> }
           {!players ? (
             <Spinner h={20} w={20} color="primary.900" />
           ) : (
-            <PlayersList data={players} isLoading={isLoading} />
+            <>
+              <Text
+                color="primary.800"
+                alignSelf="flex-start"
+                marginY={5}
+                fontSize={20}
+                fontFamily="mono"
+              >
+                <span>Team Budget: </span>
+                {teamBudget} $
+              </Text>
+              <PlayersList players={players} isLoading={isLoading} />
+            </>
           )}
         </DrawerBody>
         <DrawerFooter>

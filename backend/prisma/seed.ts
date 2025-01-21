@@ -45,12 +45,10 @@ async function seedDatabase() {
       },
     });
 
-  
-    const teamPlayers = players
-      .sort(() => Math.random() - 0.5)
-      .slice(0, 20); 
+    const teamPlayers = players.sort(() => Math.random() - 0.5).slice(0, 20);
 
     for (const player of teamPlayers) {
+      const isInTransfer = teamPlayers.indexOf(player) < 2;
       const createdPlayer = await prisma.player.create({
         data: {
           name: player.name,
@@ -58,13 +56,11 @@ async function seedDatabase() {
           value: player.value,
           club: player.club,
           teams: {
-            connect: { id: team.id }, 
+            connect: { id: team.id },
           },
         },
       });
 
-  
-      const isInTransfer = teamPlayers.indexOf(player) < 2;
       if (isInTransfer) {
         await prisma.transfer.create({
           data: {
@@ -82,8 +78,8 @@ async function seedDatabase() {
 }
 
 async function main() {
-  await resetDatabase(); 
-  await seedDatabase(); 
+  await resetDatabase();
+  await seedDatabase();
 }
 
 main()

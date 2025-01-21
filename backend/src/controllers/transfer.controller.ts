@@ -84,11 +84,11 @@ export const TransferController = {
         });
       }
 
-      const result = await TransferService.assignPlayerToBuyer(
+      const result = await TransferService.assignPlayerToBuyer({
         transferId,
         offeredPrice,
-        buyerId
-      );
+        buyerId,
+      });
 
       res.status(result.status).json({
         success: result.success,
@@ -99,6 +99,36 @@ export const TransferController = {
       res.status(500).json({
         success: false,
         message: "Internal Server Error",
+      });
+    }
+  },
+  sellPlayer: async (req: Request, res: Response) => {
+    try {
+      const { playerId, sellerId, askingPrice } = req.body;
+      const userId = req.user.userId;
+
+      if (!playerId || !sellerId || !askingPrice || sellerId !== userId) {
+        return res.status(403).json({
+          success: false,
+          message: "Unable To complete This Transfer",
+        });
+      }
+
+      const result = await TransferService.createTransferByUser({
+        playerId,
+        askingPrice,
+        sellerId,
+      });
+
+      res.status(result.status).json({
+        success: result.success,
+        message: result.message,
+      });
+    } catch (error) {
+      console.error("Error Creating transfer:", error);
+      res.status(500).json({
+        success: false,
+        message: "Error Creating transfer: Internal Server Error",
       });
     }
   },

@@ -24,7 +24,7 @@ app.use(loggingMiddleware);
 // Routes
 app.use('/auth', authRouter);
 app.use('/team', teamRouter);
-app.use('/transfers', transfersRouter);
+app.use('/transfer', transfersRouter);
 
 
 

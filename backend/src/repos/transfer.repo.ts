@@ -181,4 +181,36 @@ export const TransferRepo = {
       }
     });
   },
+  createTransfer: async ({
+    playerId,
+    askingPrice,
+    sellerTeamId,
+  }: {
+    playerId: string;
+    askingPrice: number;
+    sellerTeamId: string;
+  }) => {
+    try {
+      await prisma.transfer.create({
+        data: {
+          playerId,
+          askingPrice,
+          sellerId: sellerTeamId,
+        },
+      });
+
+      return {
+        success: true,
+        message: "Creating Transfer Successfully",
+        status: 201,
+      };
+    } catch (error) {
+      console.error(error);
+      return {
+        success: false,
+        message: "Something went wrong while Creating transfer",
+        status: 500,
+      };
+    }
+  },
 };
