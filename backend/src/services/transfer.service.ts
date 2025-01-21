@@ -73,10 +73,17 @@ export const TransferService = {
     }
 
     // check user legability to buy another player 15 - 25
+    //       5 listed        10  listed         0 listed          0 listed        5 listed        
+    //       20 notListed    15  notListed      25 notListed      15 notListed    15 notListed
+  
+    // sell  yes             no                 yes               no              no
+    // buy   no              no                 no                yes             yes
+
     const doesBuyerExceedMaxNumberOfPlayers = checkTeamPlayersNumber(
       buyer.team.players,
       "buy"
     );
+    
 
     if (doesBuyerExceedMaxNumberOfPlayers) {
       return {
@@ -132,10 +139,11 @@ export const TransferService = {
       };
     }
 
-    // check user legability to buy another player 15 - 25
     
+    console.log({players})
+    const NotListedPlayers = players.filter((player) => player.transfers[0]?.status !== 'LISTED')
     const doesSellerExceedMinNumberOfPlayers = checkTeamPlayersNumber(
-      players,
+      NotListedPlayers,
       "sell"
     );
 
@@ -212,6 +220,15 @@ const checkUserBudget = (userBudget: number, offeredPrice: number) => {
   return userBudget >= offeredPrice;
 };
 
+
+
+
+    // check user legability to buy another player 15 - 25
+    //       5 listed        10  listed         0 listed          0 listed        5 listed
+    //       20 notListed    15  notListed      25 notListed      15 notListed    15 notListed   
+  
+    // sell  yes             no                 yes               no              no
+    // buy   no              no                 no                yes             yes
 const checkTeamPlayersNumber = (
   players: Player[] | undefined,
   buyOrSell: "sell" | "buy"

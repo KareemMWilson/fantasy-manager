@@ -55,11 +55,23 @@ export const TeamDrawer = ({
                 color="primary.800"
                 alignSelf="flex-start"
                 marginY={5}
-                fontSize={20}
+                fontSize={17}
                 fontFamily="mono"
+                w='fit-content'
               >
                 <span>Team Budget: </span>
                 {teamBudget} $
+              </Text>
+              <Text
+                color="primary.800"
+                alignSelf="flex-start"
+                marginY={5}
+                fontSize={17}
+                fontFamily="mono"
+                w='fit-content'
+              >
+                <span>Team Members: </span>
+                {players.length} Players
               </Text>
               <PlayersList players={players} isLoading={isLoading} />
             </>
