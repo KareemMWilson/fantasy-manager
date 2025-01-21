@@ -1,8 +1,9 @@
 import Button from "@/components/Button";
 import { toaster } from "@/components/Toaster";
-import { useAppSelector } from "@/hooks/redux";
+import { useAppDispatch, useAppSelector } from "@/hooks/redux";
 import { RootState } from "@/store";
 import { useBuyPlayerMutation } from "@/store/services/transfers.Service";
+import { refetchAll } from "@/store/slices/refetchSlice";
 import { Input, VStack, Text } from "@chakra-ui/react";
 import { useState } from "react";
 
@@ -10,18 +11,18 @@ interface BuyTransferContentProps {
   askingPrice: number;
   playerName: string;
   transferId: string;
-  refetchTransfers: () => void
 }
 
 export const BuyTransferContent = ({
   askingPrice,
   playerName,
   transferId,
-  refetchTransfers
 }: BuyTransferContentProps) => {
   const userId = useAppSelector((state: RootState) => state.auth.user?.id);
   const [offeredPrice, setOfferedPrice] = useState<number>(askingPrice);
   const [buyPlayer] = useBuyPlayerMutation();
+  const dispatch = useAppDispatch()
+
 
   const handleOfferPriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const offered = parseFloat(e.target.value);
@@ -37,7 +38,7 @@ export const BuyTransferContent = ({
           title: 'Done',
           description: data.message as string || 'Something Went Wrong',
         })
-        refetchTransfers()
+        dispatch(refetchAll(true))
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error: any) {
         console.error(error)

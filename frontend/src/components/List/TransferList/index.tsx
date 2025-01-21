@@ -11,12 +11,10 @@ export const TransferList = ({
   data,
   isLoading,
   whichTransfer,
-  refetchTransfers,
 }: {
   data: Transfer[] | undefined;
   isLoading: boolean;
   whichTransfer?: Transfers;
-  refetchTransfers?: () => void;
 }) => {
   const userId = useAppSelector((state: RootState) => state.auth.user?.id);
   const manibulatedData =
@@ -46,7 +44,6 @@ export const TransferList = ({
             key={item.id}
             transfer={item}
             mineTransfer={item.seller.user.id === userId}
-            refetchTransfers={refetchTransfers!}
           />
         ))
       ) : (

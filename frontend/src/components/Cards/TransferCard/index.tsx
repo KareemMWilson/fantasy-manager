@@ -10,16 +10,16 @@ import {
 import { toaster } from "../../Toaster";
 import { GiBuyCard, GiCancel } from "react-icons/gi";
 import { BuyTransferContent } from "@/components/Cards/TransferCard/BuyTransfer";
+import { useAppDispatch } from "@/hooks/redux";
+import { refetchAll } from "@/store/slices/refetchSlice";
 
 interface TransferCardProps {
   mineTransfer: boolean | undefined;
-  refetchTransfers: () => void;
   transfer: Transfer;
 }
 
 export const TransferCard = ({
   mineTransfer,
-  refetchTransfers,
   transfer,
 }: TransferCardProps) => {
   const [openDialog, setOpenDialog] = useState<boolean>(false);
@@ -32,10 +32,10 @@ export const TransferCard = ({
   const { email: sellerEmail } = user;
   const buttonActionText = mineTransfer ? "Cancel Transfer" : "Buy";
   const buttonActionIcon = mineTransfer ? <GiCancel />  : < GiBuyCard />
-
+  const dispatch = useAppDispatch()
   const content = mineTransfer
     ? "Are you sure you want to cancel Transfer."
-    : <BuyTransferContent askingPrice={askingPrice} playerName={playerName} transferId={transferId} refetchTransfers={refetchTransfers}/>
+    : <BuyTransferContent askingPrice={askingPrice} playerName={playerName} transferId={transferId}/>
 
 
   const handleDeleteTransfer = async () => {
@@ -49,7 +49,7 @@ export const TransferCard = ({
           description: "Your Transfer Deleted Successfully",
         });
         setOpenDialog(false);
-        refetchTransfers();
+        dispatch(refetchAll(true))
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {

@@ -10,7 +10,7 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@chakra-ui/react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { FaExchangeAlt } from "react-icons/fa";
 import { TransferFilters } from "./TransferFilters";
 import {
@@ -18,7 +18,9 @@ import {
   useGetGlobalTransfersQuery,
 } from "@/store/services/transfers.Service";
 import { TransferList, Transfers } from "@/components/List/TransferList";
-
+import { RootState } from "@/store";
+import { useAppDispatch, useAppSelector } from "@/hooks/redux";
+import { doneRefetching } from "@/store/slices/refetchSlice";
 
 export const defaultSearchQuery: QueryType = {
   playerName: "",
@@ -30,12 +32,27 @@ export const TransferDrawer = () => {
   const [hovered, setHovered] = useState<boolean>(false);
   const [whichTransfers, setWhichTransfers] = useState<Transfers>("MY");
   const [searchQuery, setSearchQuery] = useState<QueryType>(defaultSearchQuery);
-
+  const dispatch = useAppDispatch()
   const memoizedSearchQuery = useMemo(() => searchQuery, [searchQuery]);
-  const { refetch: refetchGlobalTransfers, data: globalTransfers, isLoading: globalTransfersIsLoading } =
-    useGetGlobalTransfersQuery(memoizedSearchQuery);
+  const {
+    refetch: refetchingAllTransfers,
+    data: globalTransfers,
+    isLoading: globalTransfersIsLoading,
+  } = useGetGlobalTransfersQuery(memoizedSearchQuery);
 
-    return (
+  const { refetchAllData, transfers } = useAppSelector(
+    (state: RootState) => state.refetchSlice
+  );
+
+  useEffect(() => {
+    if (refetchAllData || transfers) {
+      refetchingAllTransfers();
+      dispatch(doneRefetching())
+
+    }
+  }, [refetchAllData, transfers]);
+
+  return (
     <DrawerRoot placement="end">
       <DrawerBackdrop />
       <DrawerTrigger asChild position="absolute" right="5rem" bottom="3rem">
@@ -59,7 +76,7 @@ export const TransferDrawer = () => {
         <DrawerHeader>
           <DrawerTitle color="primary.900">Transfers List</DrawerTitle>
         </DrawerHeader>
-        <DrawerBody overflowY='hidden'>
+        <DrawerBody overflowY="hidden">
           {/**filters */}
           <TransferFilters
             whichTransfers={whichTransfers}
@@ -69,8 +86,11 @@ export const TransferDrawer = () => {
           />
 
           {/**Lists */}
-          <TransferList data={globalTransfers?.data} isLoading={globalTransfersIsLoading} refetchTransfers={refetchGlobalTransfers} whichTransfer={whichTransfers}/>
-
+          <TransferList
+            data={globalTransfers?.data}
+            isLoading={globalTransfersIsLoading}
+            whichTransfer={whichTransfers}
+          />
         </DrawerBody>
         <DrawerFooter>
           <DrawerActionTrigger asChild>
