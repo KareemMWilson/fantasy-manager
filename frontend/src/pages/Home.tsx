@@ -19,18 +19,19 @@ const Home = () => {
   const dispatch = useAppDispatch();
   const { notification, socket } = useNotifications(userId, isNewUser);
   const [teamCreated, setTeamCreated] = useState<boolean>(false);
-  const [trigger, {data}] = useLazyGetUserTeamQuery()
+  const [trigger, {data, isLoading: loadingPlayers}] = useLazyGetUserTeamQuery()
 
   useEffect(() => {
-    if(teamCreated){
+    if(teamCreated || !isNewUser){
+      console.log('Getting Team')
       trigger()
-    } 
-  }, [teamCreated])
+    }
+  }, [teamCreated, isNewUser])
+
 
 
   const handleNotificationBudget = () => {
     setNotificationOpen(false);
-    dispatch(setIsNewUser(false));
   };
 
   useEffect(() => {
@@ -40,6 +41,7 @@ const Home = () => {
         description: notification?.message
       })
       setTeamCreated(true)
+      dispatch(setIsNewUser(false))
       socket?.disconnect()
     }else if(notification?.type === 'error'){
       toaster.success({
@@ -138,7 +140,7 @@ const Home = () => {
           </VStack>
         </VStack>
       </HStack>
-      <TeamDrawer players={data?.data?.players} />
+      <TeamDrawer players={data?.data?.players} teamBudget={data?.data.budget} isLoading={loadingPlayers}/>
       <TransferDrawer />
     </>
   );

@@ -1,64 +1,45 @@
-import { Card as ChakraCard, Text, VStack } from "@chakra-ui/react";
+import { Badge, Card as ChakraCard, Text, VStack } from "@chakra-ui/react";
 import Button from "../../Button";
 import { IoShirt } from "react-icons/io5";
 import Dialog from "../../Dialog";
 import { useState } from "react";
-import { toaster } from "../../Toaster";
+// import { toaster } from "../../Toaster";
+import { Player } from "@/store/services/team.Service";
+import { GiBuyCard, GiCancel } from "react-icons/gi";
 // import { useGetUserTeamQuery } from "@/store/services/team.Service";
 
 interface PlayerCardProps {
-  title: string;
-  subtitleLabel: string;
-  subtitleInfo: string;
-  price: number;
-  buttonText: string;
-  refetchTransfers: () => void
+  player: Player
+  refetchPlayers?: () => void
 }
 
 export const PlayerCard = ({
-  title,
-  subtitleInfo,
-  subtitleLabel,
-  buttonText,
-  price,
-  refetchTransfers
+  player,
 }: PlayerCardProps) => {
   const [openDialog, setOpenDialog] = useState<boolean>(false);
   
-  const handleIntiatingTransferForPlayer = async () => {
-    try {
-      const data = {}
-      console.log(data);
+
+  const { id: playerId, name: playerName, club, value  } = player;
+  const buttonActionText = player ? "Sell Player" : "Cancel Transfer";
+  const buttonActionIcon = player ? < GiBuyCard />  : <GiCancel />
+  const content = <></>
+
+  const handleCreateTransfer = async () => {
     
-      if (data) {
-        toaster.success({
-          title: "Done",
-          description: "Your Transfer Deleted Successfully",
-        });
-        setOpenDialog(false);
-        refetchTransfers()
-      }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
-      console.error("Error deleting transfer:", error);
-      toaster.error({
-        title: "Oops",
-        description: error?.data?.message || 'Error While deleting transfer',
-      });
-    }
   };
+
   return (
     <>
       <Dialog
         isOpen={openDialog}
         onClose={() => setOpenDialog(false)}
         cancelButton={{
-          text: "Initialize Transfer",
-          onClick: handleIntiatingTransferForPlayer,
+          text: player ? "Cancel Transfer" : "Cancel",
+          onClick: player ? handleCreateTransfer : undefined,
         }}
       >
         <VStack>
-          <>Here is The Player</>
+          {content}
         </VStack>
       </Dialog>
       <ChakraCard.Root width="100%" height="fit-content" borderRadius="2rem">
@@ -70,19 +51,24 @@ export const PlayerCard = ({
         >
           <IoShirt size={70} />
           <VStack justifyContent="center" alignItems="center">
-            <ChakraCard.Title mt="2">{title}</ChakraCard.Title>
+            <ChakraCard.Title mt="2">{playerName}</ChakraCard.Title>
             <ChakraCard.Description>
-              {subtitleLabel}
-              {subtitleInfo}
+              Club:
+              {club}
             </ChakraCard.Description>
           </VStack>
-          <Text color="primary.900" fontSize={20}>
-            {price} $
-          </Text>
+          <VStack>
+            <Badge colorPalette="green">Player Value:</Badge>
+            <Text color="primary.900" fontSize={20}>
+              {value} $
+            </Text>
+          </VStack>
         </ChakraCard.Body>
         <ChakraCard.Footer justifyContent="flex-end">
-          <Button onClick={() => setOpenDialog(true)}>{buttonText}</Button>
-        </ChakraCard.Footer>    
+          <Button onClick={() => setOpenDialog(true)} iconRight={buttonActionIcon}>
+            {buttonActionText}
+          </Button>
+        </ChakraCard.Footer>
       </ChakraCard.Root>
     </>
   );

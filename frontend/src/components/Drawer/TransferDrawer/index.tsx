@@ -17,7 +17,7 @@ import {
   QueryType,
   useGetGlobalTransfersQuery,
 } from "@/store/services/transfers.Service";
-import { List, Transfers } from "@/components/List";
+import { TransferList, Transfers } from "@/components/List/TransferList";
 
 
 export const defaultSearchQuery: QueryType = {
@@ -69,7 +69,7 @@ export const TransferDrawer = () => {
           />
 
           {/**Lists */}
-          <List data={globalTransfers?.data} isLoading={globalTransfersIsLoading} refetchTransfers={refetchGlobalTransfers} whichTransfer={whichTransfers}/>
+          <TransferList data={globalTransfers?.data} isLoading={globalTransfersIsLoading} refetchTransfers={refetchGlobalTransfers} whichTransfer={whichTransfers}/>
 
         </DrawerBody>
         <DrawerFooter>

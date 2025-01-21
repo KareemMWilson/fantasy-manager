@@ -1,5 +1,6 @@
 import Button from "@/components/Button";
 import { TeamButton } from "@/components/Button/TeamButton";
+import { PlayersList } from "@/components/List/PlayersList";
 import { Player } from "@/store/services/team.Service";
 import {
   DrawerActionTrigger,
@@ -12,28 +13,51 @@ import {
   DrawerTitle,
   DrawerTrigger,
   Spinner,
+  Text,
 } from "@chakra-ui/react";
+import { BiXCircle } from "react-icons/bi";
 
-export const TeamDrawer = ({players}: { players: Player[] | undefined}) => {
-
+export const TeamDrawer = ({
+  players,
+  isLoading,
+  teamBudget
+}: {
+  players: Player[] | undefined;
+  isLoading: boolean;
+  teamBudget: number | undefined;
+}) => {
   return (
-    <DrawerRoot placement='start'>
+    <DrawerRoot placement="start">
       <DrawerBackdrop />
       <DrawerTrigger asChild>
         <TeamButton />
       </DrawerTrigger>
-      <DrawerContent position='absolute' top={0} left={0} height='100vh' borderRightRadius='32px' bg='green.300'>
+      <DrawerContent
+        position="absolute"
+        top="0rem"
+        left="0rem"
+        height="100vh"
+        minWidth="37rem"
+        borderRightRadius="32px"
+        bg="green.300"
+      >
         <DrawerHeader>
-          <DrawerTitle color='primary.900' fontSize={20}>Your Team</DrawerTitle>
+          <DrawerTitle color="primary.900" fontSize={20}>
+            Your Team
+          </DrawerTitle>
         </DrawerHeader>
         <DrawerBody>
-         {!players ? <Spinner h={20} w={20} color='primary.900' /> : <>Players List</>}
+          {players && <Text color='primary.800' alignSelf='flex-start' marginY={5} fontSize={20} fontFamily='mono'><span>Team Budget: </span>{teamBudget} $</Text> }
+          {!players ? (
+            <Spinner h={20} w={20} color="primary.900" />
+          ) : (
+            <PlayersList data={players} isLoading={isLoading} />
+          )}
         </DrawerBody>
         <DrawerFooter>
           <DrawerActionTrigger asChild>
-            <Button variant="outline">Cancel</Button>
+            <Button variant="outline" iconRight={<BiXCircle />}></Button>
           </DrawerActionTrigger>
-          <Button>Transfer</Button>
         </DrawerFooter>
       </DrawerContent>
     </DrawerRoot>
