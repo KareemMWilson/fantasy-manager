@@ -3,13 +3,13 @@ import { TeamRepo } from "../repos/team.repo";
 
 export const TeamService = {
   async initializingTeam(userId: string): Promise<Team> {
-    const randomPlayers = await this.getTeamPlayers();
+    const randomPlayers = await this.getTeamPlayersForNewUser();
     const teamAssigned = await TeamRepo.assignTeamToUser(randomPlayers, userId);
 
     return teamAssigned;
   },
 
-  async getTeamPlayers(): Promise<Player[]> {
+  async getTeamPlayersForNewUser(): Promise<Player[]> {
     const requiredPlayersForNewUser: Record<Position, number> = {
       GOALKEEPER: 3,
       DEFENDER: 6,
@@ -26,5 +26,10 @@ export const TeamService = {
     const playersByPosition = await Promise.all(playerPromises);
 
     return playersByPosition.flat();
+  },
+  async getUserTeamById(userId: string): Promise<Team | null> {
+    const team = await TeamRepo.getUserTeamById(userId);
+
+    return team;
   },
 };

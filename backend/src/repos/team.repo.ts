@@ -34,4 +34,20 @@ export const TeamRepo = {
       throw error;
     }
   },
+  async getUserTeamById(userId: string): Promise<Team | null> {
+    try {
+      const team = await prisma.team.findFirst({
+        where: {
+          userId
+        },
+        include: {
+          players: true
+        }
+      })
+      return team
+    } catch (error) {
+      console.error("Error assigning team to user:", error);
+      throw error;
+    }
+  }
 };

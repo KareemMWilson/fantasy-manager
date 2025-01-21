@@ -58,7 +58,7 @@ export interface BuyPlayerRequestPayloadType {
     offeredPrice: number
 }
 
-export const teamApi = api.injectEndpoints({
+export const transferApi = api.injectEndpoints({
   endpoints: (builder) => ({
     getGlobalTransfers: builder.query<GetTransferResponseType, QueryType>({
       query: (query) => {
@@ -113,4 +113,4 @@ export const {
   useLazyGetUserTransfersQuery,
   useDeleteUserTransferMutation,
   useBuyPlayerMutation
-} = teamApi;
+} = transferApi;

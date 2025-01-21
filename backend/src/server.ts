@@ -2,6 +2,10 @@ import app from './app';
 import { config } from './config';
 import { green } from 'colorette';
 import { prisma } from './db/prisma';
+import { initializeSocketIO } from './integrations/websocket';
+import { initializeTeamService } from './integrations/Bull';
+import { createServer } from 'http';
+
 
 const PORT = config.PORT;
 
@@ -10,9 +14,15 @@ const startServer = async () => {
     await prisma.$connect();
     console.log(`✅ ${green('Successfully connected to database')}`);
     
-    const server = app.listen(PORT, () => {
+    const server = createServer(app);
+
+    server.listen(PORT, () => {
       console.log(`✅ ${green(`Server running on PORT: ${PORT}`)}`);
     });
+
+    const io = initializeSocketIO(server);
+
+    initializeTeamService(io);
 
     process.on('SIGTERM', async () => {
       console.log('🔄 SIGTERM received. Shutting down gracefully...');

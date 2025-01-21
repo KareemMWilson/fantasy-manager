@@ -1,26 +1,35 @@
 import { api } from "../api";
 
-export interface TeamRequest {
-  email: string;
-  password: string;
+export interface TeamResponseType {
+  success: boolean;
+  data: TeamData;
 }
 
-export interface TeamResponse {
-  data: {
-    team: string;
-  };
-  success: boolean;
+export interface TeamData {
+  id: string;
+  name: string | null;
+  budget: number;
+  userId: string;
+  players: Player[];
+}
+
+export interface Player {
+  id: string;
+  name: string;
+  position: 'GOALKEEPER' | 'DEFENDER' | 'MIDFIELDER' | 'ATTACKER';
+  club: string;
+  value: number;
 }
 
 export const teamApi = api.injectEndpoints({
   endpoints: (builder) => ({
-    getUserTeam: builder.query<TeamResponse, TeamRequest>({
+    getUserTeam: builder.query<TeamResponseType, void>({
       query: () => ({
-        url: `/myteam`,
+        url: "/team/myteam",
         method: "GET",
       }),
     }),
   }),
 });
 
-export const { useGetUserTeamQuery } = teamApi;
+export const { useLazyGetUserTeamQuery } = teamApi;
