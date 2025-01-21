@@ -33,7 +33,6 @@ model Player {
   name      String
   position  Position
   club      String
-  isInTransfer Boolean @default(false)
   value     Int       @default(0)
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -44,7 +43,7 @@ model Player {
 model Transfer {
   id          String         @id @default(uuid())
   player      Player         @relation(fields: [playerId], references: [id])
-  playerId    String         @unique
+  playerId    String         
   askingPrice Int
   status      TransferStatus @default(LISTED)
   listedAt    DateTime       @default(now())

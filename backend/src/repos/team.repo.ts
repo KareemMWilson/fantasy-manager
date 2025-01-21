@@ -39,12 +39,31 @@ export const TeamRepo = {
       const team = await prisma.team.findFirst({
         where: {
           userId
+        }
+      });
+
+      if (!team) return null;
+
+      return await prisma.team.findFirst({
+        where: {
+          id: team.id
         },
         include: {
-          players: true
+          players: {
+            include: {
+              transfers: {
+                where: {
+                  AND: [
+                    { status: 'LISTED' },
+                    { sellerId: team.id }
+                  ]
+                }
+              }
+            }
+          }
         }
-      })
-      return team
+      });
+
     } catch (error) {
       console.error("Error assigning team to user:", error);
       throw error;

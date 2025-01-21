@@ -121,14 +121,15 @@ export const TransferService = {
     const {team} = seller
     const {players} = team
 
-    const playerAlreadyInTransfer = players.filter((player) => player.id === playerId && player.isInTransfer)
+    const playerAlreadyInTransfer = await TransferRepo.checkPlayerTransferStatus(playerId, team.id)
 
-    if(playerAlreadyInTransfer) {
+
+    if(playerAlreadyInTransfer){
       return {
-        status: 401,
-        message: "Player is already listed in transfers.",
+        status: 405,
+        message: "Cannot create Transfer due to Player is already listed",
         success: false,
-      }; 
+      };
     }
     // check user legability to buy another player 15 - 25
     const doesSellerExceedMinNumberOfPlayers = checkTeamPlayersNumber(

@@ -213,4 +213,15 @@ export const TransferRepo = {
       };
     }
   },
+  checkPlayerTransferStatus: async (playerId: string, teamId: string) => {
+    const transfer = await prisma.transfer.findFirst({
+      where: {
+        playerId: playerId,
+        sellerId: teamId,
+        status: 'LISTED'
+      }
+    });
+    
+    return transfer !== null;
+  }
 };

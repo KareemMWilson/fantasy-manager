@@ -1,4 +1,5 @@
 import { api } from "../api";
+import { Transfer } from "./transfers.Service";
 
 export interface TeamResponseType {
   success: boolean;
@@ -19,7 +20,7 @@ export interface Player {
   position: 'GOALKEEPER' | 'DEFENDER' | 'MIDFIELDER' | 'ATTACKER';
   club: string;
   value: number;
-  isInTransfer: boolean
+  transfers: Transfer[] | null 
 }
 
 export const teamApi = api.injectEndpoints({

@@ -17,7 +17,7 @@ interface PlayerCardProps {
 export const PlayerCard = ({ player }: PlayerCardProps) => {
   const [openDialog, setOpenDialog] = useState<boolean>(false);
 
-  const { id: playerId, name: playerName, club, value, isInTransfer } = player;
+  const { name: playerName, club, value } = player;
   const buttonActionText = player ? "Sell Player" : "Cancel Transfer";
   const buttonActionIcon = player ? <GiBuyCard /> : <GiCancel />;
   const content = (
@@ -55,7 +55,7 @@ export const PlayerCard = ({ player }: PlayerCardProps) => {
           </VStack>
         </ChakraCard.Body>
         <ChakraCard.Footer justifyContent="flex-end">
-          {isInTransfer ? (
+          {player?.transfers?.length ? (
             <Badge colorPalette="red">Listed for sale</Badge>
           ) : (
             <Button
