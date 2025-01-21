@@ -22,10 +22,10 @@ export const TransferService = {
     if (!userId) return undefined;
     return await TransferRepo.getTransferWithOwnershipCheck(transferId, userId);
   },
-  deleteUserTransfer: async (transferId: string) => {
+  cancelTransfer: async (transferId: string) => {
     return await TransferRepo.deleteUserTransfer(transferId);
   },
-  assignPlayerToBuyer: async ({
+  BuyPlayer: async ({
     transferId,
     offeredPrice,
     buyerId,
@@ -100,7 +100,7 @@ export const TransferService = {
 
     return completeTransfer;
   },
-  createTransferByUser: async ({
+  sellPlayer: async ({
     playerId,
     askingPrice,
     sellerId,
@@ -134,10 +134,8 @@ export const TransferService = {
 
     // check user legability to buy another player 15 - 25
     
-    const numberOfTransfersListedInThisTeam = players.filter((player) => player.transfers.length === 0)
-
     const doesSellerExceedMinNumberOfPlayers = checkTeamPlayersNumber(
-      numberOfTransfersListedInThisTeam,
+      players,
       "sell"
     );
 

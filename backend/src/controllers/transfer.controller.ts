@@ -58,7 +58,7 @@ export const TransferController = {
         });
       }
 
-      await TransferService.deleteUserTransfer(transferId);
+      await TransferService.cancelTransfer(transferId);
 
       res.status(200).json({
         success: true,
@@ -84,7 +84,7 @@ export const TransferController = {
         });
       }
 
-      const result = await TransferService.assignPlayerToBuyer({
+      const result = await TransferService.BuyPlayer({
         transferId,
         offeredPrice,
         buyerId,
@@ -114,7 +114,7 @@ export const TransferController = {
         });
       }
 
-      const result = await TransferService.createTransferByUser({
+      const result = await TransferService.sellPlayer({
         playerId,
         askingPrice,
         sellerId,
