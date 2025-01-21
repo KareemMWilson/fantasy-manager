@@ -135,7 +135,7 @@ export const TransferService = {
     // check user legability to buy another player 15 - 25
     
     const numberOfTransfersListedInThisTeam = players.filter((player) => player.transfers.length === 0)
-    console.log({numberOfTransfersListedInThisTeam})
+
     const doesSellerExceedMinNumberOfPlayers = checkTeamPlayersNumber(
       numberOfTransfersListedInThisTeam,
       "sell"
@@ -225,9 +225,9 @@ const checkTeamPlayersNumber = (
 
   switch (buyOrSell) {
     case "sell":
-      return players.length < minNumberInTeam;
+      return players.length <= minNumberInTeam;
     case "buy":
-      return players.length > maxNumberInTeam;
+      return players.length >= maxNumberInTeam;
     default:
       return true;
   }
