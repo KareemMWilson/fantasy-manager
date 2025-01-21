@@ -53,7 +53,7 @@ export const TeamCreationService = {
     });
 
 
-    console.log("TeamCreationService initialized.");
+    console.log("✅ TeamCreationService initialized.");
   },
 
   async addTeamCreationJob(userId: string): Promise<void> {

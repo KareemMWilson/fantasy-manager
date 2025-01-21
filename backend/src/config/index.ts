@@ -10,6 +10,9 @@ const configSchema = z.object({
     PORT: z.coerce.number().default(6379),
     PASSWORD: z.string().default("password"),
   }),
+  frontend: z.object({
+    URL: z.string()
+  })
 });
 
 const parsedConfig = configSchema.parse({
@@ -22,6 +25,9 @@ const parsedConfig = configSchema.parse({
     PORT: process.env.REDIS_PORT,
     PASSWORD: process.env.REDIS_PASSWORD,
   },
+  frontend: {
+    URL: process.env.FRONTEND_URL
+  }
 });
 
 export const config = parsedConfig;
