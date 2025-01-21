@@ -1,6 +1,7 @@
 import { Player } from "@prisma/client";
 import { AuthRepo } from "../repos/auth.repo";
 import { CompleteTransferProps, TransferRepo } from "../repos/transfer.repo";
+import { TeamRepo } from "../repos/team.repo";
 
 interface TransferFilters {
   teamName?: string;
@@ -109,8 +110,8 @@ export const TransferService = {
     sellerId: string;
   }): Promise<{ success: boolean; message: string; status: number }> => {
     
-    const seller = await AuthRepo.getUserById(sellerId);
-    if(!seller || !seller.team || !seller.team.players){
+    const sellerTeam = await TeamRepo.getUserTeamById(sellerId);
+    if(!sellerTeam || !sellerTeam.players){
       return {
         status: 400,
         message: "invalid Parameters",
@@ -118,10 +119,9 @@ export const TransferService = {
       }; 
     }
 
-    const {team} = seller
-    const {players} = team
+    const {players} = sellerTeam
 
-    const playerAlreadyInTransfer = await TransferRepo.checkPlayerTransferStatus(playerId, team.id)
+    const playerAlreadyInTransfer = await TransferRepo.checkPlayerTransferStatus(playerId, sellerTeam.id)
 
 
     if(playerAlreadyInTransfer){
@@ -131,9 +131,13 @@ export const TransferService = {
         success: false,
       };
     }
+
     // check user legability to buy another player 15 - 25
+    
+    const numberOfTransfersListedInThisTeam = players.filter((player) => player.transfers.length === 0)
+    console.log({numberOfTransfersListedInThisTeam})
     const doesSellerExceedMinNumberOfPlayers = checkTeamPlayersNumber(
-      players,
+      numberOfTransfersListedInThisTeam,
       "sell"
     );
 
@@ -146,7 +150,7 @@ export const TransferService = {
     }
 
     return await TransferRepo.createTransfer({
-      sellerTeamId: seller?.team?.id,
+      sellerTeamId: sellerTeam.id,
       askingPrice,
       playerId,
     });

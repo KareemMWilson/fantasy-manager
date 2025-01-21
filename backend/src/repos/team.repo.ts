@@ -1,4 +1,4 @@
-import { Player, Position, Team } from "@prisma/client";
+import { Player, Position, Prisma, Team } from "@prisma/client";
 import { prisma } from "../db/prisma";
 
 export const TeamRepo = {
@@ -34,39 +34,39 @@ export const TeamRepo = {
       throw error;
     }
   },
-  async getUserTeamById(userId: string): Promise<Team | null> {
+  async getUserTeamById(
+    userId: string
+  ): Promise<Prisma.TeamGetPayload<{
+    include: { players: { include: { transfers: true } } };
+  }> | null> {
     try {
       const team = await prisma.team.findFirst({
         where: {
-          userId
-        }
+          userId,
+        },
       });
 
       if (!team) return null;
 
       return await prisma.team.findFirst({
         where: {
-          id: team.id
+          id: team.id,
         },
         include: {
           players: {
             include: {
               transfers: {
                 where: {
-                  AND: [
-                    { status: 'LISTED' },
-                    { sellerId: team.id }
-                  ]
-                }
-              }
-            }
-          }
-        }
+                  AND: [{ status: "LISTED" }, { sellerId: team.id }],
+                },
+              },
+            },
+          },
+        },
       });
-
     } catch (error) {
       console.error("Error assigning team to user:", error);
       throw error;
     }
-  }
+  },
 };

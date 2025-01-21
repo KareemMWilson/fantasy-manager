@@ -23,7 +23,7 @@ export const PlayerCard = ({ player }: PlayerCardProps) => {
   const content = (
     <SellPlayerContent
       player={player}
-      refetch={() => console.log("refetched")}
+      setOpenDialog={setOpenDialog}
     />
   );
 

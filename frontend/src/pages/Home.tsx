@@ -8,25 +8,31 @@ import { useNotifications } from "@/hooks/useNotification.hook";
 import { RootState } from "@/store";
 import { useLazyGetUserTeamQuery } from "@/store/services/team.Service";
 import { setIsNewUser } from "@/store/slices/authSlice";
+import { doneRefetching } from "@/store/slices/refetchSlice";
 import { HStack, VStack } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { IoShirt } from "react-icons/io5";
 
 const Home = () => {
   const [isNotificationOpen, setNotificationOpen] = useState<boolean>(true);
+  const [teamCreated, setTeamCreated] = useState<boolean>(false);
   const isNewUser = useAppSelector((state: RootState) => state.auth.isNewUser);
   const userId = useAppSelector((state: RootState) => state.auth.user?.id);
-  const dispatch = useAppDispatch();
+  const { refetchAllData, team } = useAppSelector(
+      (state: RootState) => state.refetchSlice
+    );
+    const dispatch = useAppDispatch()
   const { notification, socket } = useNotifications(userId, isNewUser);
-  const [teamCreated, setTeamCreated] = useState<boolean>(false);
   const [trigger, {data, isLoading: loadingPlayers}] = useLazyGetUserTeamQuery()
 
+
   useEffect(() => {
-    if(teamCreated || !isNewUser){
+    if(teamCreated || !isNewUser || refetchAllData || team){
       console.log('Getting Team')
       trigger()
+      dispatch(doneRefetching())
     }
-  }, [teamCreated, isNewUser])
+  }, [teamCreated, isNewUser, refetchAllData, team])
 
 
 
