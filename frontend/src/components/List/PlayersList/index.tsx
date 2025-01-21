@@ -1,11 +1,10 @@
-import { Spinner, VStack } from "@chakra-ui/react";
+import { VStack } from "@chakra-ui/react";
 import { Player } from "@/store/services/team.Service";
 import { PlayerCard } from "@/components/Cards/PlayerCard";
 //
 
 export const PlayersList = ({
   players,
-  refetchPlayers,
 }: {
   players: Player[] | undefined;
   isLoading: boolean;
@@ -15,9 +14,10 @@ export const PlayersList = ({
     <VStack
       gap={5}
       overflowY="auto"
-      height="47rem"
+      height="44rem"
       borderRadius="1rem"
       scrollbarColor="bg.info"
+      paddingBottom='15rem'
     >
       {players ? (
         players?.map((item: Player) => <PlayerCard key={item.id} player={item} />)

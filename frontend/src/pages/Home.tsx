@@ -2,6 +2,7 @@ import { Avatar } from "@/components/Avatar";
 import Dialog from "@/components/Dialog";
 import { TeamDrawer } from "@/components/Drawer/TeamDrawer";
 import { TransferDrawer } from "@/components/Drawer/TransferDrawer";
+import FootballFormation from "@/components/PlayersOnMap";
 import { toaster } from "@/components/Toaster";
 import { useAppDispatch, useAppSelector } from "@/hooks/redux";
 import { useNotifications } from "@/hooks/useNotification.hook";
@@ -76,8 +77,9 @@ const Home = () => {
         </Dialog>
       )}
       {/** Players on Map */}
+      <FootballFormation />
       {/* <Spinner width='20rem' height='20rem' color='primary.900' borderWidth='6px' opacity='0.6' position='absolute' top='50%' left='50%' /> */}
-      <HStack height="40rem" width="40vw">
+      {/* <HStack height="40rem" width="40vw">
         <VStack
           id="GOALKEEPER"
           height="25rem"
@@ -145,7 +147,7 @@ const Home = () => {
             <IoShirt size={60} />
           </VStack>
         </VStack>
-      </HStack>
+      </HStack> */}
       <TeamDrawer players={data?.data?.players} teamBudget={data?.data.budget} isLoading={loadingPlayers}/>
       <TransferDrawer />
     </>
