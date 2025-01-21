@@ -46,6 +46,16 @@ export const TransferService = {
         success: false,
       };
     }
+    const doesBuyerAlreadyOwnPlayer = await TeamRepo.chechPlayerExistanceInATeam(buyer.team?.id, transfer?.playerId)
+
+    if (doesBuyerAlreadyOwnPlayer) {
+      return {
+        status: 400,
+        message:
+          "Cannot complete Transfer due to you already have this player",
+        success: false,
+      };
+    }
 
     // check 95%
     const doesOfferedPriceAbove95Percentage = checkOfferedPrice(
@@ -72,12 +82,6 @@ export const TransferService = {
       };
     }
 
-    // check user legability to buy another player 15 - 25
-    //       5 listed        10  listed         0 listed          0 listed        5 listed        
-    //       20 notListed    15  notListed      25 notListed      15 notListed    15 notListed
-  
-    // sell  yes             no                 yes               no              no
-    // buy   no              no                 no                yes             yes
 
     const doesBuyerExceedMaxNumberOfPlayers = checkTeamPlayersNumber(
       buyer.team.players,
@@ -223,12 +227,14 @@ const checkUserBudget = (userBudget: number, offeredPrice: number) => {
 
 
 
-    // check user legability to buy another player 15 - 25
-    //       5 listed        10  listed         0 listed          0 listed        5 listed
-    //       20 notListed    15  notListed      25 notListed      15 notListed    15 notListed   
-  
-    // sell  yes             no                 yes               no              no
-    // buy   no              no                 no                yes             yes
+
+
+
+// check user legability to buy another player 15 - 25
+//       5 listed        10  listed         0 listed          0 listed        5 listed
+//       20 notListed    15  notListed      25 notListed      15 notListed    15 notListed   
+// sell  yes             no                 yes               no              no
+// buy   no              no                 no                yes             yes
 const checkTeamPlayersNumber = (
   players: Player[] | undefined,
   buyOrSell: "sell" | "buy"

@@ -34,9 +34,7 @@ export const TeamRepo = {
       throw error;
     }
   },
-  async getUserTeamById(
-    userId: string
-  ): Promise<Prisma.TeamGetPayload<{
+  async getUserTeamById(userId: string): Promise<Prisma.TeamGetPayload<{
     include: { players: { include: { transfers: true } } };
   }> | null> {
     try {
@@ -68,5 +66,18 @@ export const TeamRepo = {
       console.error("Error assigning team to user:", error);
       throw error;
     }
+  },
+  chechPlayerExistanceInATeam: async (teamId: string, playerId: string) => {
+    const player = await prisma.team.findFirst({
+      where: {
+        id: teamId,
+        players: {
+          some: {
+            id: playerId,
+          },
+        },
+      },
+    });
+    return player !== null
   },
 };
