@@ -6,7 +6,7 @@ services:
   # ----------------------------
   db:
     image: postgres:17
-    container_name: db
+    container_name: fantasy_db
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
@@ -15,13 +15,18 @@ services:
       - "5432:5432"
     volumes:
       - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   # ----------------------------
   # Redis
   # ----------------------------
   redis:
     image: redis:7
-    container_name: redis
+    container_name: fantasy_redis
     environment:
       REDIS_PASSWORD: "password"
     ports:
@@ -33,15 +38,17 @@ services:
   # Backend
   # ----------------------------
   backend:
-    container_name: backend
+    container_name: fantasy_manager
     build:
       context: .
       dockerfile: Dockerfile
     ports:
       - "5000:5000"
     depends_on:
-      - db
-      - redis
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
     environment:
       NODE_ENV: production
       PORT: 5000
@@ -52,6 +59,7 @@ services:
       DATABASE_USER: postgres
       DATABASE_PASSWORD: postgres
       DATABASE_NAME: fantacy_manager
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/fantacy_manager
 
       # Redis Vars
       REDIS_HOST: redis
@@ -61,7 +69,7 @@ services:
       JWT_SECRET: kareem-secret
 
       # FRONTEND
-      FRONTEND_URL: "http://localhost:5173"
+      FRONTEND_URL: http://localhost:5173
 
 volumes:
   db_data:

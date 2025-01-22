@@ -33,8 +33,9 @@ COPY --from=build /app/dist ./dist
 
 COPY --from=build /app/package.json .
 COPY --from=build /app/pnpm-lock.yaml .
+COPY --from=build /app/prisma ./prisma
 
 EXPOSE 5000
 
-CMD ["pnpm", "start"]
+CMD ["sh", "-c", "pnpm prisma db push && pnpm run seed && pnpm start"]
     

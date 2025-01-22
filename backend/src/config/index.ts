@@ -11,7 +11,7 @@ const configSchema = z.object({
     PASSWORD: z.string().default("password"),
   }),
   frontend: z.object({
-    URL: z.string()
+    URL: z.string().default("http://localhost:3000")
   })
 });
 

@@ -1,4 +1,3 @@
-import React from 'react';
 import { HStack, VStack, Text, Box } from '@chakra-ui/react';
 import { IoShirt } from "react-icons/io5";
 
