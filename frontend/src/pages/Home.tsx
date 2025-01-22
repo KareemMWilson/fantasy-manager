@@ -82,8 +82,8 @@ const Home = () => {
           borderWidth="6px"
           opacity="0.6"
           position="absolute"
-          top="50%"
-          left="50%"
+          top="33%"
+          left="41%"
         />
       ) : (
         <FootballFormation />

@@ -1,3 +1,5 @@
+import { useAppSelector } from '@/hooks/redux';
+import { RootState } from '@/store';
 import { Navigate, useLocation } from 'react-router-dom';
 
 interface ProtectedRouteProps {
@@ -5,11 +7,11 @@ interface ProtectedRouteProps {
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
-  const isAuthenticated = localStorage.getItem('token') !== null; // You can modify this based on your auth logic
+  const isAuthenticated = useAppSelector((state: RootState) => state.auth.isAuthenticated)
   const location = useLocation();
 
   if (!isAuthenticated) {
-    return <Navigate to="/login" state={{ from: location }} replace />;
+    return <Navigate to="/auth" state={{ from: location }} replace />;
   }
 
   return <>{children}</>;
