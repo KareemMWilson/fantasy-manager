@@ -2,7 +2,7 @@ import { z } from "zod";
 
 const configSchema = z.object({
   jwt: z.object({
-    secret: z.string().min(1, "JWT_SECRET is required").default('secret'),
+    secret: z.string().default('secret'),
   }),
   PORT: z.coerce.number().default(5000),
   REDIS: z.object({
@@ -11,7 +11,7 @@ const configSchema = z.object({
     PASSWORD: z.string().default("password"),
   }),
   frontend: z.object({
-    URL: z.string().default("http://localhost:3000")
+    URL: z.string().default("http://localhost:5173")
   })
 });
 

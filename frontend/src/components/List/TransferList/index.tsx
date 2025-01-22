@@ -1,8 +1,9 @@
-import { Spinner, VStack } from "@chakra-ui/react";
+import {  Spinner, VStack } from "@chakra-ui/react";
 import { TransferCard } from "../../Cards/TransferCard";
 import { Transfer } from "@/store/services/transfers.Service";
 import { useAppSelector } from "@/hooks/redux";
 import { RootState } from "@/store";
+import { Empty } from "@/components/Empty";
 //
 
 export type Transfers = "GLOBAL" | "MY";
@@ -38,7 +39,7 @@ export const TransferList = ({
           borderWidth="6px"
           marginTop="10rem"
         />
-      ) : data ? (
+      ) : manibulatedData ? (
         manibulatedData?.map((item: Transfer) => (
           <TransferCard
             key={item.id}
@@ -47,7 +48,18 @@ export const TransferList = ({
           />
         ))
       ) : (
-        <p>No transfers found.</p>
+        <Empty
+          title={
+            whichTransfer === "MY"
+              ? "You don't List any Transfer yet"
+              : "No Global Transfer"
+          }
+          description={
+            whichTransfer === "MY"
+              ? "If you want to create transfer just go to your team and choose player for sale"
+              : ""
+          }
+        />
       )}
     </VStack>
   );
