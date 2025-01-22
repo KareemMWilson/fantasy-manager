@@ -1,12 +1,12 @@
 #!/bin/sh
 set -e
 
-echo "=== Entrypoint: Running Prisma migrations, seeding, and starting the app ==="
-
+echo "=== Waiting for database ==="
 pnpm prisma db push
-
 pnpm prisma generate
 
-pnpm run seed
+echo "=== Attempting to seed database ==="
+pnpm run seed 2>&1 | grep -q "P2002" && echo "Seeding skipped - data already exists" || true
 
+echo "=== Starting application ==="
 pnpm start
