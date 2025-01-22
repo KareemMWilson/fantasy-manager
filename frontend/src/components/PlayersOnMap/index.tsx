@@ -1,4 +1,4 @@
-import { HStack, VStack, Text, Box } from '@chakra-ui/react';
+import { HStack, VStack, Box } from '@chakra-ui/react';
 import { IoShirt } from "react-icons/io5";
 
 interface PlayerPosition {
@@ -33,7 +33,7 @@ const FootballFormation = () => {
     { id: "RW", title: "Right Wing", number: "14", stats: "Assists: 15", alignSelf: "center" }
   ];
 
-  const PlayerIcon = ({ title, alignSelf }: PlayerPosition) => (
+  const PlayerIcon = ({ alignSelf }: PlayerPosition) => (
     <Box
       position="relative"
       alignSelf={alignSelf}

@@ -1,6 +1,15 @@
 FROM node:20-alpine
 
+RUN apk add --no-cache bash
+
+SHELL ["/bin/bash", "-c"]
+
+ENV SHELL=/bin/bash
+
 RUN corepack enable && corepack prepare pnpm@latest --activate
+
+ENV PNPM_HOME=/root/.local/share/pnpm
+ENV PATH=$PNPM_HOME:$PATH
 
 WORKDIR /app
 
@@ -11,6 +20,8 @@ RUN pnpm install --frozen-lockfile
 COPY . .
 
 RUN pnpm build
+
+RUN pnpm setup
 
 RUN pnpm install -g serve
 
