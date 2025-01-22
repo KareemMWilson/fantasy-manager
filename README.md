@@ -2,7 +2,7 @@
 
 ## Important Links and Info
 
-- [Video Demo]()
+- [Video Demo](https://drive.google.com/file/d/13P6CMr0r5X9MNe4xzyojoZy4au6d5aXE/view?usp=sharing)
 
 <!-- TABLE OF CONTENTS -->
 
@@ -181,7 +181,7 @@ Create `.env` file using .example.env file , It will work
 <!-- AUTHORS -->
 
 
-## 🕙 Time Report  <a name="time-report"></a>
+## 🕙 Time Report  <a name="Time-Report"></a>
 
 | **Section**          | **Description**                                                                     | **Time Spent** |
 |-----------------------|-------------------------------------------------------------------------------------|----------------|
@@ -199,7 +199,7 @@ Create `.env` file using .example.env file , It will work
 
 
 
-## 🛠 Areas for Improvement
+## 🛠 Areas for Improvement<a name="built-with"></a>
 
 - ### UI:
 
